@@ -27,7 +27,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install
         working-directory: ./notes
-
-        #     - name: Lint
-        # run: npm lint
-        # working-directory: ./notes
+      - name: Lint
+        run: pnpm lint
+        working-directory: ./notes
