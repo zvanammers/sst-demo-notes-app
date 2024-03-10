@@ -11,9 +11,6 @@ permissions:
 jobs:
   stack-ci:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: notes
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,10 +20,10 @@ jobs:
           version: 8
       - name: Setup pnpm
         uses: actions/setup-node@v3
-        # working-directory: ./notes
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
+          cache-dependency-path: '/notes'
       - name: Install dependencies
         run: pnpm install
 
