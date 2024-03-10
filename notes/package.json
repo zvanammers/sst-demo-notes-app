@@ -23,6 +23,8 @@
     "packages/*"
   ],
   "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.1.1",
+    "@typescript-eslint/parser": "^7.1.1",
     "eslint": "^8.57.0",
     "notes": "link:"
   }
