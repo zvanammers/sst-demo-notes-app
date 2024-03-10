@@ -1,7 +1,8 @@
 import { SSTConfig } from "sst";
-import { API } from "./stacks/MyStack";
+import { StorageStack } from "./stacks/StorageStack";
 
 export default {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   config(_input) {
     return {
       name: "notes",
@@ -9,6 +10,6 @@ export default {
     };
   },
   stacks(app) {
-    app.stack(API);
+    app.stack(StorageStack);
   }
 } satisfies SSTConfig;
