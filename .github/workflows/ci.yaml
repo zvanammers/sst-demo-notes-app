@@ -19,11 +19,11 @@ jobs:
         with:
           version: 8
       - name: Setup pnpm
-        working-directory: ./notes
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
+        working-directory: ./notes
       - name: Install dependencies
         run: pnpm install
 
