@@ -1,0 +1,28 @@
+name: 'CI'
+on:
+  workflow_dispatch:
+  push:
+    branches:
+     - main
+  pull_request:
+permissions:
+  contents: read
+  pull-requests: read
+jobs:
+  stack-ci:
+    runs-on:
+      group: ubuntu-runners
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.11.x
+          cache: npm
+      - name: Install
+        run: npm ci
+        working-directory: ./notes
+      - name: Lint
+        run: npm lint
+        working-directory: ./notes
