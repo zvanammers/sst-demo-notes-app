@@ -8,7 +8,7 @@ export const main = handler(async (event) => {
     const noteParams = {
         TableName: Table.Notes.tableName,
         Key: {
-            userId: "123",
+            userId: event.requestContext.authorizer?.iam.cognitoIdentity.identityId,
             noteId: event?.pathParameters?.id
         },
     };
@@ -31,7 +31,7 @@ export const main = handler(async (event) => {
     const updateParams: DocumentClient.UpdateItemInput = {
         TableName: Table.Notes.tableName,
         Key: {
-            userId: "123",
+            userId: event.requestContext.authorizer?.iam.cognitoIdentity.identityId,
             noteId: event?.pathParameters?.id
         },
         UpdateExpression: "SET content = :content, attachment = :attachment",

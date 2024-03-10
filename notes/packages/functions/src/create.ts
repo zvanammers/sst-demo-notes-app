@@ -16,7 +16,7 @@ export const main = handler(async (event) => {
     const params = {
         TableName: Table.Notes.tableName,
         Item: {
-            userId: "123",
+            userId: event.requestContext.authorizer?.iam.cognitoIdentity.identityId,
             noteId: randomUUID(),
             content: data.content,
             attachment: data.attachment,
