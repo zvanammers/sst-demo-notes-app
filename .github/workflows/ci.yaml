@@ -30,3 +30,6 @@ jobs:
       - name: Lint
         run: pnpm lint
         working-directory: ./notes
+      - name: Tests
+        run: pnpm test
+        working-directory: ./notes
