@@ -11,7 +11,8 @@
     "console": "sst console",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .ts",
-    "test": "vitest"
+    "test": "vitest run",
+    "test2": "sst bind vitest run"
   },
   "devDependencies": {
     "@tsconfig/node18": "^18.2.2",
