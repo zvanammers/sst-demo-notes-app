@@ -5,9 +5,9 @@ import { Template } from "aws-cdk-lib/assertions";
 import { ApiStack } from "../ApiStack";
 import { StorageStack } from "../StorageStack";
 
-it("StorageStack has correct attributes", async () => {
-  await initProject({});
-  const app = new App({ mode: "deploy" });
+it("AiStack has correct attributes", async () => {
+  await initProject({stage: "test"});
+  const app = new App({ mode: "dev" });
   // WHEN
   app.stack(StorageStack).stack(ApiStack);
   // THEN

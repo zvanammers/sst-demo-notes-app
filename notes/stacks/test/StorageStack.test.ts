@@ -5,7 +5,7 @@ import { StorageStack } from "../StorageStack";
 import { Match, Template } from "aws-cdk-lib/assertions";
 
 it("StorageStack has correct attributes", async () => {
-  await initProject({});
+  await initProject({stage: "test"});
   const app = new App({ mode: "deploy" });
   // WHEN
   app.stack(StorageStack);
