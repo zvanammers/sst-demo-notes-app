@@ -8,7 +8,7 @@ export function ApiStack({ stack }: StackContext) {
 
     const api = new Api(stack, "Api", {
         defaults: {
-            authorizer: "iam",
+            // authorizer: "iam",
             function: {
                 bind: [table, WEATHER_API_SECRET_KEY],
             }

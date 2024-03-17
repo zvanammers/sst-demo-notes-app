@@ -1,4 +1,4 @@
-export default interface currentWeather {
+interface currentWeather {
     coord: {
       lon: number,
       lat: number
@@ -47,3 +47,17 @@ export default interface currentWeather {
     name: string,
     cod: number
 }
+
+interface popularWeatherStats {
+    temp: number,
+    feels_like: number,
+    temp_min: number,
+    temp_max: number,
+    pressure: number,
+    humidity: number,
+    sea_level: number,
+    grnd_level: number
+}
+
+export { popularWeatherStats };
+export default currentWeather;
