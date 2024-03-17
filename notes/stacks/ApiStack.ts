@@ -8,7 +8,7 @@ export function ApiStack({ stack }: StackContext) {
 
     const api = new Api(stack, "Api", {
         defaults: {
-            // authorizer: "iam",
+            authorizer: "iam",
             function: {
                 bind: [table, WEATHER_API_SECRET_KEY],
             }
@@ -21,7 +21,7 @@ export function ApiStack({ stack }: StackContext) {
             "DELETE /notes/{id}": "packages/functions/src/delete.main",
             "GET /weather": "packages/functions/src/weather.main",
         },
-    }); 
+    });
     stack.addOutputs({
         ApiEndpoint: api.url,
     });

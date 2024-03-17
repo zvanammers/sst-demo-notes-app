@@ -11,7 +11,5 @@ export const main = handler(async (event) => {
 
     const body = await response.json() as currentWeather;
 
-    console.log(body.main.temp);
-
     return JSON.stringify(body);
 })
