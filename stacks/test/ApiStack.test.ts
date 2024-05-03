@@ -6,11 +6,11 @@ import { ApiStack } from '../ApiStack';
 import { StorageStack } from '../StorageStack';
 
 it('AiStack has correct attributes', async () => {
-  await initProject({ stage: 'test' });
-  const app = new App({ mode: 'dev' });
-  // WHEN
-  app.stack(StorageStack).stack(ApiStack);
-  // THEN
-  const template = Template.fromStack(getStack(ApiStack));
-  template.resourceCountIs('AWS::Lambda::Function', 7);
+	await initProject({ stage: 'test' });
+	const app = new App({ mode: 'dev' });
+	// WHEN
+	app.stack(StorageStack).stack(ApiStack);
+	// THEN
+	const template = Template.fromStack(getStack(ApiStack));
+	template.resourceCountIs('AWS::Lambda::Function', 7);
 });
