@@ -7,6 +7,7 @@ import type currentWeather from '../../core/models/currentWeather';
 export const main = handler(async (event) => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { lat, lon } = JSON.parse(event.body || '{}');
+	const x = 'hello world';
 
 	const response = await fetch(
 		`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${Config.WEATHER_API_SECRET_KEY}`,

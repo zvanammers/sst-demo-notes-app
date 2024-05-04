@@ -10,7 +10,11 @@
 		}
 	},
 	"files": {
-		"ignore": ["dist/**", ".vscode/**"]
+		"ignore": ["dist/**", ".vscode/**", "node_modules"]
+	},
+	"formatter": {
+		"indentWidth": 2,
+		"indentStyle":"tab"
 	},
 	"javascript": {
 		"formatter": {

@@ -1,4 +1,4 @@
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 import { Table } from 'sst/node/table';
 import dynamoDb from '@notes/core/dynamodb';
 import handler from '@notes/core/handler';
