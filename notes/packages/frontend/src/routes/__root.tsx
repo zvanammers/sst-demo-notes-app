@@ -47,7 +47,7 @@ function App() {
 	} = theme.useToken();
 
 	return (
-		<Layout style={{ minWidth: '100vh' }}>
+		<Layout>
 			<Header style={{ display: 'flex', alignItems: 'center' }}>
 				<div className="demo-logo" />
 				<Menu
