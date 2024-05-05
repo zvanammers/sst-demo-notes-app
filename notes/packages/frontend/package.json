@@ -4,7 +4,7 @@
 	"version": "0.0.0",
 	"type": "module",
 	"scripts": {
-		"dev:sst": "sst bind vite --profile admin",
+		"dev:sst": "sst bind vite --mode development --profile admin",
 		"dev": "vite",
 		"build": "tsc && vite build",
 		"preview": "vite preview",

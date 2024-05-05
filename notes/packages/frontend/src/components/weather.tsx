@@ -1,10 +1,9 @@
 import { Card } from 'antd';
-import { useMemo, useState } from 'react';
 import { ReloadOutlined } from '@ant-design/icons';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import type { PopularWeatherStats } from '../../../core/models/currentWeather';
-import { convertPopularWeatherStatsToCelcius } from '../../../core/src/convert';
+import getConfig from '../config';
 
 const gridStyle: React.CSSProperties = {
 	width: '50%',
@@ -12,20 +11,19 @@ const gridStyle: React.CSSProperties = {
 };
 
 function Weather() {
-	// const [weather, setWeather] = useState<PopularWeatherStats>();
-	// const [temp, setTemp] = useState(0);
-
-	const { isLoading, data, refetch, isFetching } =
+	const { isLoading, data, refetch, isFetching, error } =
 		useQuery<PopularWeatherStats>({
 			queryKey: ['weather'],
 			queryFn: () =>
-				axios
-					.get('https://qfegbj0ub3.execute-api.us-east-1.amazonaws.com/weather')
-					.then((res) => res.data),
+				axios.get(`${getConfig().apiUrl}/weather`).then((res) => res.data),
 		});
 
 	function onClick() {
 		refetch();
+	}
+
+	if (error) {
+		return <>Error</>;
 	}
 
 	return (
