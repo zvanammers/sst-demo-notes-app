@@ -1,9 +1,8 @@
 import handler from '@notes/core/handler';
 import fetch from 'node-fetch';
 import { Config } from 'sst/node/config';
-import currentWeather, {
-	popularWeatherStats,
-} from '../../core/models/currentWeather';
+import type currentWeather from '../../core/models/currentWeather';
+import type { popularWeatherStats } from '../../core/models/currentWeather';
 
 export const main = handler(async (event) => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -17,7 +16,7 @@ export const main = handler(async (event) => {
 	}
 
 	const response = await fetch(
-		`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${Config.WEATHER_API_SECRET_KEY}`,
+		`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${Config.WEATHER_API_SECRET_KEY}&units=metric`,
 	);
 
 	const body = (await response.json()) as currentWeather;

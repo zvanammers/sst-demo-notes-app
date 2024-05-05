@@ -1,4 +1,4 @@
-import { popularWeatherStats } from '../models/currentWeather';
+import type { PopularWeatherStats } from '../models/currentWeather';
 
 export function convertFahrenheit(fah: number) {
 	return (fah - 32) / 1.8;
@@ -8,11 +8,20 @@ export function convertCelcius(cel: number) {
 	return (cel * 9) / 5 + 32;
 }
 
-export function convertPopularWeatherStats(stats: popularWeatherStats) {
-	const newStats = stats;
-	newStats.feels_like = convertFahrenheit(newStats.feels_like);
-	newStats.temp = convertFahrenheit(newStats.temp);
-	newStats.temp_max = convertFahrenheit(newStats.temp_max);
-	newStats.temp_min = convertFahrenheit(newStats.temp_min);
-	return newStats;
+export function convertPopularWeatherStatsToCelcius(
+	stats?: PopularWeatherStats,
+): PopularWeatherStats | undefined {
+	if (!stats) {
+		return undefined;
+	}
+	return {
+		feels_like: convertFahrenheit(stats.feels_like),
+		temp: convertFahrenheit(stats.temp),
+		temp_max: convertFahrenheit(stats.temp_max),
+		temp_min: convertFahrenheit(stats.temp_min),
+		pressure: stats.pressure,
+		humidity: stats.humidity,
+		sea_level: stats.sea_level,
+		grnd_level: stats.grnd_level,
+	} as PopularWeatherStats;
 }
