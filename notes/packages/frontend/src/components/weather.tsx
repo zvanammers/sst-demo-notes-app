@@ -6,11 +6,6 @@ import type { PopularWeatherStats } from '../../../core/models/currentWeather';
 import getConfig from '../config';
 import { useState } from 'react';
 
-const gridStyle: React.CSSProperties = {
-	width: '50%',
-	textAlign: 'center',
-};
-
 function Weather() {
 	const [lat, setLat] = useState('-30.15');
 	const [lon, setLon] = useState('');
