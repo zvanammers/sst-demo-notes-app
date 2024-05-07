@@ -35,6 +35,8 @@ jobs:
           node-version: 20.11.x
           cache: 'pnpm'
           cache-dependency-path: '**/pnpm-lock.yaml'
+      - name: Install Dependencies
+        run: pnpm i
+        working-directory: notes
       - name: Deploy app
-        run: |
-          pnpm i && pnpm sst deploy --stage prod
+        run: pnpm sst deploy --stage prod
