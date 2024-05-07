@@ -1,4 +1,4 @@
-import { Api, Config, StackContext, use } from 'sst/constructs';
+import { Api, Config, type StackContext, use } from 'sst/constructs';
 import { StorageStack } from './StorageStack';
 
 export function ApiStack({ stack }: StackContext) {
@@ -10,6 +10,9 @@ export function ApiStack({ stack }: StackContext) {
 	);
 
 	const api = new Api(stack, 'Api', {
+		cors: {
+			allowMethods: ['GET'],
+		},
 		defaults: {
 			// authorizer: "iam",
 			function: {

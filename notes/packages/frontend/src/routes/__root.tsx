@@ -1,15 +1,17 @@
 import '../App.css';
 import { useState } from 'react';
-import { AppstoreOutlined, MailOutlined } from '@ant-design/icons';
+import { SunFilled, HomeOutlined, CameraOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import { Breadcrumb, Layout, Menu, theme, Flex } from 'antd';
-const { Header, Content, Footer, Sider } = Layout;
+import { Layout, Menu, theme } from 'antd';
+const { Header, Content, Footer } = Layout;
 import { Link } from '@tanstack/react-router';
 import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
+import notFound from '../components/notFound';
 
 export const Route = createRootRoute({
 	component: App,
+	notFoundComponent: notFound,
 });
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -23,7 +25,7 @@ function App() {
 					Home
 				</Link>
 			),
-			icon: <AppstoreOutlined />,
+			icon: <HomeOutlined />,
 		},
 		{
 			key: 'About',
@@ -32,7 +34,16 @@ function App() {
 					About
 				</Link>
 			),
-			icon: <MailOutlined />,
+			icon: <CameraOutlined />,
+		},
+		{
+			key: 'Weather',
+			label: (
+				<Link to="/weather" className="[&.active]:font-bold">
+					Weather
+				</Link>
+			),
+			icon: <SunFilled />,
 		},
 	];
 

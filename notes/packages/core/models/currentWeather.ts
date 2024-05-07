@@ -1,4 +1,4 @@
-interface currentWeather {
+interface CurrentWeather {
 	coord: {
 		lon: number;
 		lat: number;
@@ -12,16 +12,7 @@ interface currentWeather {
 		},
 	];
 	base: string;
-	main: {
-		temp: number;
-		feels_like: number;
-		temp_min: number;
-		temp_max: number;
-		pressure: number;
-		humidity: number;
-		sea_level: number;
-		grnd_level: number;
-	};
+	main: PopularWeatherStats;
 	visibility: number;
 	wind: {
 		speed: number;
@@ -48,7 +39,7 @@ interface currentWeather {
 	cod: number;
 }
 
-interface popularWeatherStats {
+interface PopularWeatherStats {
 	temp: number;
 	feels_like: number;
 	temp_min: number;
@@ -59,5 +50,5 @@ interface popularWeatherStats {
 	grnd_level: number;
 }
 
-export { popularWeatherStats };
-export default currentWeather;
+export type { PopularWeatherStats };
+export default CurrentWeather;
