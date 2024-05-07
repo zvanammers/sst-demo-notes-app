@@ -40,3 +40,4 @@ jobs:
         working-directory: notes
       - name: Deploy app
         run: pnpm sst deploy --stage prod
+        working-directory: notes
