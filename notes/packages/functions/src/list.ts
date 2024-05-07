@@ -1,7 +1,7 @@
 import { Table } from 'sst/node/table';
 import dynamoDb from '@notes/core/dynamodb';
 import handler from '@notes/core/handler';
-import { DocumentClient } from 'aws-sdk/clients/dynamodb';
+import type { DocumentClient } from 'aws-sdk/clients/dynamodb';
 
 export const main = handler(async (event) => {
 	const params: DocumentClient.QueryInput = {
