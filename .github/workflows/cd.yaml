@@ -26,9 +26,9 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: arn:aws:iam::381492042854:role/GitHubDeploy
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE }}
         #  role-duration-seconds: 14390 #adjust as needed for your build time
-          aws-region: us-east-1
+          aws-region: ${{ secrets.AWS_REGION }}
       - name: Setup pnpm
         uses: actions/setup-node@v3
         with:
