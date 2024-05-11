@@ -5,7 +5,7 @@
 	"type": "module",
 	"workspaces": ["packages/*", "frontend"],
 	"scripts": {
-		"dev": "sst dev",
+		"dev": "sst dev --profile admin",
 		"build": "sst build",
 		"deploy": "sst deploy",
 		"remove": "sst remove",

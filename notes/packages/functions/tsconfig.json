@@ -5,7 +5,8 @@
 		"moduleResolution": "node",
 		"baseUrl": ".",
 		"paths": {
-			"@notes/core/*": ["../core/src/*"]
+			"@notes/core/*": ["../core/src/*"],
+			"@models/*": ["../core/models/*"],
 		}
 	}
 }
