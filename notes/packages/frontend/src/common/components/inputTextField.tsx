@@ -11,7 +11,9 @@ const inputTextField = (
 			<Input
 				placeholder={name}
 				value={value}
-				onChange={(e) => action(e.target.value)}
+				onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+					action(e.target.value)
+				}
 				allowClear
 				addonBefore={addOnBefore}
 			/>

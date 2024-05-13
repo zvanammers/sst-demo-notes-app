@@ -1,6 +1,6 @@
 import { StrictMode } from 'react';
-import ReactDOM from 'react-dom/client';
 import './index.css';
+import { createRoot } from 'react-dom/client';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
 
 import { routeTree } from './routeTree.gen';
@@ -14,13 +14,19 @@ declare module '@tanstack/react-router' {
 	}
 }
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+	defaultOptions: {
+		queries: {
+			retry: 2,
+		},
+	},
+});
 
 // biome-ignore lint/style/noNonNullAssertion: <explanation>
 const rootElement = document.getElementById('app')!;
 console.log(rootElement);
 if (!rootElement.innerHTML) {
-	const root = ReactDOM.createRoot(rootElement);
+	const root = createRoot(rootElement);
 	root.render(
 		<StrictMode>
 			<QueryClientProvider client={queryClient}>

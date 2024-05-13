@@ -1,17 +1,12 @@
-import { Card, Flex, Col, Row, Select, Space, type GetProps } from 'antd';
+import { Card, Flex, Col, Row, Select, Space } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import getConfig from '../config';
 import { useState } from 'react';
-import inputTextField from './inputTextField';
+import inputTextField from '../common/components/inputTextField';
 import type currentWeather from '@models/currentWeather';
-import Icon, {
-	type CustomIconComponentProps,
-} from '@ant-design/icons/lib/components/Icon';
-import GhostDuotone from '@phosphor-icons/core/duotone/ghost-duotone.svg?react';
-
-// type CustomIconComponentProps = GetProps<typeof Icon>;
+import { type IconComponent, getWeatherIcon } from '../common/weatherIcons';
 
 function Weather() {
 	const [lat, setLat] = useState('-30.15');
@@ -21,6 +16,7 @@ function Weather() {
 	const [city, setCity] = useState('');
 
 	const formatQueryStrings = () => {
+		// replace with API layer, including axios.get below
 		if (locationType === 'Lat') {
 			if (lat === '' && lon === '') {
 				return '';
@@ -62,31 +58,27 @@ function Weather() {
 					'Latitude',
 					lat,
 					setLat,
-					<div style={{ width: 90 }}>Latitude</div>,
+					<div style={{ width: 60 }}>Latitude</div>,
 				)}
 				{inputTextField(
 					'Longitude',
 					lon,
 					setLon,
-					<div style={{ width: 90 }}>Longitude</div>,
+					<div style={{ width: 60 }}>Longitude</div>,
 				)}
 			</>
 		);
 	};
 
-	const GhostIcon = (props: Partial<CustomIconComponentProps>) => (
-		<Icon component={GhostDuotone} {...props} />
+	const WeatherIcon: IconComponent = getWeatherIcon(
+		data?.weather[0].icon ?? '',
 	);
-
-	if (error || !data) {
-		return <>Weather data could not be fetched</>;
-	}
 
 	return (
 		<div className="p-2">
 			<Row gutter={[16, 16]}>
-				<Col span={8}>
-					<Space direction="vertical" size={16}>
+				<Col span={12}>
+					<Space direction="vertical" size={8}>
 						<Card style={{ placeContent: 'center' }}>
 							<Select
 								defaultValue="Lat/Lon"
@@ -110,16 +102,21 @@ function Weather() {
 						</Card>
 					</Space>
 				</Col>
-				<Col span={16}>
-					<Card
-						onClick={onClick}
-						loading={isLoading || isFetching}
-						actions={[<ReloadOutlined key="fetch weather" />]}
-					>
-						Temp: {data?.main?.temp}&deg;C
-						<GhostIcon style={{ fontSize: '32px' }} />
-						{GhostIcon({ style: { fontSize: '32px' } })}
-					</Card>
+				<Col span={12}>
+					<>
+						{error !== null ? (
+							<>Weather data could not be fetched</>
+						) : (
+							<Card
+								onClick={onClick}
+								loading={isLoading || isFetching}
+								actions={[<ReloadOutlined key="fetch weather" />]}
+							>
+								Temp: {data?.main?.temp}&deg;C
+								<WeatherIcon style={{ fontSize: '32px' }} />
+							</Card>
+						)}
+					</>
 				</Col>
 			</Row>
 		</div>
