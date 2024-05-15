@@ -110,12 +110,12 @@ function Weather() {
 	return (
 		<div className="p-2">
 			<Row gutter={[16, 16]}>
-				<Col span={8}>
-					<Space direction="vertical" size={8}>
+				<Col>
+					<Space direction="vertical">
 						<Card style={{ placeContent: 'center' }}>
 							<Select
 								defaultValue="City"
-								style={{ width: 120 }}
+								// style={{ minWidth: 120 }}
 								onChange={setLocationType}
 								options={[
 									{ value: 'City', label: 'City' },
@@ -143,7 +143,7 @@ function Weather() {
 						</Card>
 					</Space>
 				</Col>
-				<Col span={16}>
+				<Col flex={3}>
 					<Card
 						onClick={onClick}
 						loading={isLoading || isFetching}
