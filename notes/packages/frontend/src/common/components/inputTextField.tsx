@@ -4,6 +4,7 @@ const inputTextField = (
 	name: string,
 	value: string,
 	action: React.Dispatch<React.SetStateAction<string>>,
+	onPressEnter: () => void,
 	addOnBefore: React.ReactNode,
 ) => {
 	return (
@@ -11,6 +12,7 @@ const inputTextField = (
 			<Input
 				placeholder={name}
 				value={value}
+				onPressEnter={onPressEnter}
 				onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
 					action(e.target.value)
 				}

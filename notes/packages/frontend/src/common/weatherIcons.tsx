@@ -12,6 +12,7 @@ import RainDuotone from '@phosphor-icons/core/duotone/cloud-rain-duotone.svg?rea
 import TornadoDuotone from '@phosphor-icons/core/duotone/tornado-duotone.svg?react';
 import SnowDuotone from '@phosphor-icons/core/duotone/snowflake-duotone.svg?react';
 import MistDuotone from '@phosphor-icons/core/duotone/cloud-fog-duotone.svg?react';
+import BowlNotFoundDuotone from '@phosphor-icons/core/duotone/bowl-steam-duotone.svg?react';
 
 export type IconComponent = (
 	props: Partial<CustomIconComponentProps>,
@@ -89,7 +90,11 @@ const MistNightIcon: IconComponent = (props) => (
 	<Icon component={MistDuotone} {...props} />
 );
 
-export const getWeatherIcon = (weatherCode: string): IconComponent => {
+const BowlNotFoundIcon: IconComponent = (props) => (
+	<Icon component={BowlNotFoundDuotone} {...props} />
+);
+
+export const getWeatherIcon = (weatherCode?: string): IconComponent => {
 	switch (weatherCode) {
 		case '01d':
 			return SunDayIcon;
@@ -128,5 +133,5 @@ export const getWeatherIcon = (weatherCode: string): IconComponent => {
 		case '50n':
 			return MistNightIcon;
 	}
-	return SunDayIcon;
+	return BowlNotFoundIcon;
 };
