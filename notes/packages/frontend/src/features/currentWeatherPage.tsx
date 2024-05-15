@@ -39,18 +39,7 @@ function Weather() {
 			}
 			return `?lon=${lon}`;
 		}
-		// if (locationType === 'Location' && navigator.geolocation) {
-		// 	navigator.geolocation.getCurrentPosition(
-		// 		(position) => {
-		// 			const { latitude, longitude } = position.coords;
-		// 			return `?lat=${latitude}&lon=${longitude}`;
-		// 		},
 
-		// 		(error) => {
-		// 			console.error('Error get user location: ', error);
-		// 		},
-		// 	);
-		// }
 		if (locationType === 'Postcode') {
 			return `?postcode=${postcode}`;
 		}
