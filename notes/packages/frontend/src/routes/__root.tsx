@@ -40,7 +40,7 @@ function App() {
 			key: 'Weather',
 			label: (
 				<Link to="/weather" className="[&.active]:font-bold">
-					Weather
+					Australian Weather
 				</Link>
 			),
 			icon: <SunFilled />,

@@ -8,7 +8,7 @@ import {
 	Typography,
 	Progress,
 } from 'antd';
-const { Text } = Typography;
+const { Text, Title } = Typography;
 import { ReloadOutlined } from '@ant-design/icons';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
@@ -24,11 +24,10 @@ function Weather() {
 	const [locationType, setLocationType] = useState('City');
 	const [postcode, setPostcode] = useState('');
 	const [city, setCity] = useState('Sydney');
-	const [icon, setIcon] = useState<string | undefined>(undefined);
 
 	const formatQueryStrings = () => {
 		// replace with API layer, including axios.get below
-		if (locationType === 'Lat') {
+		if (locationType === 'Lat' || locationType === 'Location') {
 			if (lat === '' && lon === '') {
 				return '';
 			}
@@ -40,6 +39,18 @@ function Weather() {
 			}
 			return `?lon=${lon}`;
 		}
+		// if (locationType === 'Location' && navigator.geolocation) {
+		// 	navigator.geolocation.getCurrentPosition(
+		// 		(position) => {
+		// 			const { latitude, longitude } = position.coords;
+		// 			return `?lat=${latitude}&lon=${longitude}`;
+		// 		},
+
+		// 		(error) => {
+		// 			console.error('Error get user location: ', error);
+		// 		},
+		// 	);
+		// }
 		if (locationType === 'Postcode') {
 			return `?postcode=${postcode}`;
 		}
@@ -55,14 +66,8 @@ function Weather() {
 			queryFn: () =>
 				axios
 					.get(`${getConfig().apiUrl}/weather${formatQueryStrings()}`)
-					.then((res) => {
-						if (data?.weather?.length && data.weather.length > 0) {
-							setIcon(data.weather[0].icon);
-						} else {
-							setIcon(undefined);
-						}
-						return res.data;
-					}),
+					.then((res) => res.data),
+			refetchOnWindowFocus: false,
 		});
 
 	const onClick = () => {
@@ -90,12 +95,33 @@ function Weather() {
 		);
 	};
 
-	const WeatherIcon: IconComponent = getWeatherIcon(icon);
+	const WeatherIcon: IconComponent = getWeatherIcon(
+		data?.weather?.length && data.weather.length > 0
+			? data?.weather[0].icon
+			: '',
+	);
+
+	if (navigator.geolocation && locationType === 'Location') {
+		navigator.geolocation.getCurrentPosition(
+			(position) => {
+				const { latitude, longitude } = position.coords;
+				console.log(latitude, longitude);
+				setLat(latitude.toString());
+				setLon(longitude.toString());
+			},
+
+			(error) => {
+				console.error('Error get user location: ', error);
+			},
+		);
+	} else {
+		console.log('Geolocation is not supported by this browser');
+	}
 
 	return (
 		<div className="p-2">
 			<Row gutter={[16, 16]}>
-				<Col span={12}>
+				<Col span={8}>
 					<Space direction="vertical" size={8}>
 						<Card style={{ placeContent: 'center' }}>
 							<Select
@@ -103,15 +129,17 @@ function Weather() {
 								style={{ width: 120 }}
 								onChange={setLocationType}
 								options={[
-									{ value: 'Lat', label: 'Lat/Lon' },
-									{ value: 'Postcode', label: 'Postcode' },
 									{ value: 'City', label: 'City' },
+									{ value: 'Postcode', label: 'Postcode' },
+									{ value: 'Lat', label: 'Lat/Lon' },
+									{ value: 'Location', label: 'Your Location' },
 								]}
 							/>
 						</Card>
 						<Card>
 							<Flex vertical gap={12}>
-								{locationType === 'Lat' && latLongUI()}
+								{(locationType === 'Lat' || locationType === 'Location') &&
+									latLongUI()}
 								{locationType === 'Postcode' &&
 									inputTextField(
 										'Postcode',
@@ -126,7 +154,7 @@ function Weather() {
 						</Card>
 					</Space>
 				</Col>
-				<Col span={12}>
+				<Col span={16}>
 					<Card
 						onClick={onClick}
 						loading={isLoading || isFetching}
@@ -136,6 +164,9 @@ function Weather() {
 							<>Weather data could not be fetched</>
 						) : (
 							<Space direction="vertical">
+								<Title level={5} style={{ marginTop: '0.5em' }}>
+									Weather in {data.name}
+								</Title>
 								<WeatherIcon style={{ fontSize: '32px' }} />
 								<Text>Temp: {data.main.temp}&deg;C </Text>
 								<Text>Description: {data.weather[0]?.description}</Text>
