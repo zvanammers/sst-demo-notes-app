@@ -7,7 +7,7 @@ const { Header, Content, Footer } = Layout;
 import { Link } from '@tanstack/react-router';
 import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
-import notFound from '../components/notFound';
+import notFound from '../common/components/notFound';
 
 export const Route = createRootRoute({
 	component: App,
