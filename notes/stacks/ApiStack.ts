@@ -2,7 +2,7 @@ import { Api, Config, type StackContext, use } from 'sst/constructs';
 import { StorageStack } from './StorageStack';
 
 export function ApiStack({ stack }: StackContext) {
-	const { table } = use(StorageStack);
+	const { notesTable, weatherTable } = use(StorageStack);
 
 	const WEATHER_API_SECRET_KEY = new Config.Secret(
 		stack,
@@ -11,12 +11,12 @@ export function ApiStack({ stack }: StackContext) {
 
 	const api = new Api(stack, 'Api', {
 		cors: {
-			allowMethods: ['GET'],
+			allowMethods: ['GET', 'POST', 'PUT'],
 		},
 		defaults: {
 			// authorizer: "iam",
 			function: {
-				bind: [table, WEATHER_API_SECRET_KEY],
+				bind: [notesTable, weatherTable, WEATHER_API_SECRET_KEY],
 			},
 		},
 		routes: {
@@ -24,8 +24,9 @@ export function ApiStack({ stack }: StackContext) {
 			'GET /notes/{id}': 'packages/functions/src/get.main',
 			'GET /notes': 'packages/functions/src/list.main',
 			'PUT /notes/{id}': 'packages/functions/src/update.main',
+			'POST /weather': 'packages/functions/src/weather/createWeather.main',
 			'DELETE /notes/{id}': 'packages/functions/src/delete.main',
-			'GET /weather': 'packages/functions/src/weather.main',
+			'GET /weather': 'packages/functions/src/weather/getWeather.main',
 		},
 	});
 	stack.addOutputs({

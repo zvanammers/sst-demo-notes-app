@@ -1,7 +1,7 @@
 import handler from '@notes/core/handler';
 import fetch from 'node-fetch';
 import { Config } from 'sst/node/config';
-import type currentWeather from '../../core/models/currentWeather';
+import type currentWeather from '../../../core/models/currentWeather';
 import type { PopularWeatherStats } from '@models/currentWeather';
 import type ZipInfo from '@models/zipInfo';
 import type CityInfo from '@models/cityInfo';

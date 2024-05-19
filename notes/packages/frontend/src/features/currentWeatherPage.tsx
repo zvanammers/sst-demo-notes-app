@@ -8,15 +8,17 @@ import {
 	Typography,
 	Progress,
 	Grid,
+	Button,
 } from 'antd';
 const { Text, Title } = Typography;
 import { ReloadOutlined } from '@ant-design/icons';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import getConfig from '../config';
 import { useState } from 'react';
 import inputTextField from '../common/components/inputTextField';
 import type currentWeather from '@models/currentWeather';
+import type savedWeatherData from '@models/savedWeatherData';
 import { type IconComponent, getWeatherIcon } from '../common/weatherIcons';
 
 function Weather() {
@@ -61,6 +63,12 @@ function Weather() {
 					.then((res) => res.data),
 			refetchOnWindowFocus: false,
 		});
+
+	const mutation = useMutation({
+		mutationFn: (newWeatherDataBlob: savedWeatherData) => {
+			return axios.post(`${getConfig().apiUrl}/weather`, newWeatherDataBlob);
+		},
+	});
 
 	const onClick = () => {
 		refetch();
@@ -181,6 +189,17 @@ function Weather() {
 										{ hour12: true },
 									)}
 								</Text>
+								<Button
+									onClick={() => {
+										mutation.mutate({
+											dt: data?.dt,
+											temp: data?.main.temp,
+											icon: data?.weather[0].icon,
+										});
+									}}
+								>
+									Save
+								</Button>
 							</Space>
 						)}
 					</Card>
