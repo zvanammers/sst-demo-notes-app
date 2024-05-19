@@ -2,7 +2,7 @@ import '../App.css';
 import { useState } from 'react';
 import { SunFilled, HomeOutlined, CameraOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import { Layout, Menu, theme } from 'antd';
+import { Grid, Layout, Menu, theme } from 'antd';
 const { Header, Content, Footer } = Layout;
 import { Link } from '@tanstack/react-router';
 import { createRootRoute, Outlet } from '@tanstack/react-router';
@@ -13,6 +13,8 @@ export const Route = createRootRoute({
 	component: App,
 	notFoundComponent: notFound,
 });
+
+const { useBreakpoint } = Grid;
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -57,6 +59,12 @@ function App() {
 		token: { colorBgContainer, borderRadiusLG },
 	} = theme.useToken();
 
+	const isLargeWindow = () => {
+		const { xs } = useBreakpoint();
+		if (xs) return false;
+		return true;
+	};
+
 	return (
 		<Layout>
 			<Header style={{ display: 'flex', alignItems: 'center' }}>
@@ -70,7 +78,7 @@ function App() {
 					style={{ flex: 1, minWidth: 0 }}
 				/>
 			</Header>
-			<Content style={{ padding: '48px 48px' }}>
+			<Content style={isLargeWindow() ? { padding: '48px 48px' } : {}}>
 				<div
 					style={{
 						background: colorBgContainer,

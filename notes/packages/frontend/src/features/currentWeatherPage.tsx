@@ -7,6 +7,7 @@ import {
 	Space,
 	Typography,
 	Progress,
+	Grid,
 } from 'antd';
 const { Text, Title } = Typography;
 import { ReloadOutlined } from '@ant-design/icons';
@@ -24,6 +25,8 @@ function Weather() {
 	const [locationType, setLocationType] = useState('City');
 	const [postcode, setPostcode] = useState('');
 	const [city, setCity] = useState('Sydney');
+
+	const { useBreakpoint } = Grid;
 
 	const formatQueryStrings = () => {
 		// replace with API layer, including axios.get below
@@ -103,30 +106,31 @@ function Weather() {
 				console.error('Error get user location: ', error);
 			},
 		);
-	} else {
-		console.log('Geolocation is not supported by this browser');
 	}
+
+	const isLargeWindow = () => {
+		const { lg } = useBreakpoint();
+		return lg ? lg : false;
+	};
 
 	return (
 		<div className="p-2">
 			<Row gutter={[16, 16]}>
-				<Col>
-					<Space direction="vertical">
+				<Col span={isLargeWindow() ? '8' : '24'} flex={3}>
+					<Space direction="vertical" size={'large'}>
 						<Card style={{ placeContent: 'center' }}>
-							<Select
-								defaultValue="City"
-								// style={{ minWidth: 120 }}
-								onChange={setLocationType}
-								options={[
-									{ value: 'City', label: 'City' },
-									{ value: 'Postcode', label: 'Postcode' },
-									{ value: 'Lat', label: 'Lat/Lon' },
-									{ value: 'Location', label: 'Your Location' },
-								]}
-							/>
-						</Card>
-						<Card>
 							<Flex vertical gap={12}>
+								<Select
+									defaultValue="City"
+									style={{ width: '100%' }}
+									onChange={setLocationType}
+									options={[
+										{ value: 'City', label: 'City' },
+										{ value: 'Postcode', label: 'Postcode' },
+										{ value: 'Lat', label: 'Lat/Lon' },
+										{ value: 'Location', label: 'Your Location' },
+									]}
+								/>
 								{(locationType === 'Lat' || locationType === 'Location') &&
 									latLongUI()}
 								{locationType === 'Postcode' &&
@@ -143,7 +147,7 @@ function Weather() {
 						</Card>
 					</Space>
 				</Col>
-				<Col flex={3}>
+				<Col flex={3} span={isLargeWindow() ? '16' : '24'}>
 					<Card
 						onClick={onClick}
 						loading={isLoading || isFetching}
@@ -155,13 +159,13 @@ function Weather() {
 							<Space direction="vertical">
 								<Title level={5} style={{ marginTop: '0.5em' }}>
 									Weather in {data.name}
+									<WeatherIcon style={{ fontSize: '32px' }} />
 								</Title>
-								<WeatherIcon style={{ fontSize: '32px' }} />
 								<Text>Temp: {data.main.temp}&deg;C </Text>
 								<Text>Description: {data.weather[0]?.description}</Text>
 								<Space>
 									<Text>Humidity:</Text>
-									<Progress percent={data.main.humidity} size={[200, 10]} />
+									<Progress percent={data.main.humidity} size={[100, 10]} />
 								</Space>
 								<Text>
 									Sunrise:{' '}
