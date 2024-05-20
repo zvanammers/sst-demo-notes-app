@@ -17,6 +17,7 @@ import { Route as rootRoute } from './routes/__root'
 // Create Virtual Routes
 
 const WeatherLazyImport = createFileRoute('/weather')()
+const PlantsLazyImport = createFileRoute('/plants')()
 const AboutLazyImport = createFileRoute('/about')()
 const IndexLazyImport = createFileRoute('/')()
 
@@ -26,6 +27,11 @@ const WeatherLazyRoute = WeatherLazyImport.update({
   path: '/weather',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/weather.lazy').then((d) => d.Route))
+
+const PlantsLazyRoute = PlantsLazyImport.update({
+  path: '/plants',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/plants.lazy').then((d) => d.Route))
 
 const AboutLazyRoute = AboutLazyImport.update({
   path: '/about',
@@ -49,6 +55,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutLazyImport
       parentRoute: typeof rootRoute
     }
+    '/plants': {
+      preLoaderRoute: typeof PlantsLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/weather': {
       preLoaderRoute: typeof WeatherLazyImport
       parentRoute: typeof rootRoute
@@ -61,6 +71,7 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren([
   IndexLazyRoute,
   AboutLazyRoute,
+  PlantsLazyRoute,
   WeatherLazyRoute,
 ])
 
