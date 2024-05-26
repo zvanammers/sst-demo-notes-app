@@ -12,7 +12,6 @@ export function ApiStack({ stack }: StackContext) {
 	const api = new Api(stack, 'Api', {
 		cors: {
 			allowMethods: ['GET'],
-			// allowOrigins: ['http://localhost:5173'],
 			allowOrigins: ['https://d1jrqg0cz9i57u.cloudfront.net'],
 		},
 		defaults: {
