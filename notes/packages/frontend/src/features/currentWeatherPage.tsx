@@ -11,13 +11,10 @@ import {
 } from 'antd';
 const { Text, Title } = Typography;
 import { ReloadOutlined } from '@ant-design/icons';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-import getConfig from '../config';
 import { useState } from 'react';
 import inputTextField from '../common/components/inputTextField';
-import type currentWeather from '@models/currentWeather';
 import { type IconComponent, getWeatherIcon } from '../common/weatherIcons';
+import { useGetCurrentWeather } from '../api/endpoints/weather';
 
 function Weather() {
 	const [lat, setLat] = useState('');
@@ -28,39 +25,13 @@ function Weather() {
 
 	const { useBreakpoint } = Grid;
 
-	const formatQueryStrings = () => {
-		// replace with API layer, including axios.get below
-		if (locationType === 'Lat' || locationType === 'Location') {
-			if (lat === '' && lon === '') {
-				return '';
-			}
-			if (lat && lon) {
-				return `?lat=${lat}&lon=${lon}`;
-			}
-			if (lat) {
-				return `?lat=${lat}`;
-			}
-			return `?lon=${lon}`;
-		}
-
-		if (locationType === 'Postcode') {
-			return `?postcode=${postcode}`;
-		}
-		if (locationType === 'City') {
-			return `?city=${city}`;
-		}
-		return '';
-	};
-
-	const { isLoading, data, refetch, isFetching, error } =
-		useQuery<currentWeather>({
-			queryKey: ['weather'],
-			queryFn: () =>
-				axios
-					.get(`${getConfig().apiUrl}/weather${formatQueryStrings()}`)
-					.then((res) => res.data),
-			refetchOnWindowFocus: false,
-		});
+	const { isLoading, data, refetch, isFetching, error } = useGetCurrentWeather({
+		locationType,
+		lat,
+		lon,
+		postcode,
+		city,
+	});
 
 	const onClick = () => {
 		refetch();
