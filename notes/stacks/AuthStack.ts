@@ -1,4 +1,4 @@
-import { Cognito, StackContext, use } from 'sst/constructs';
+import { Cognito, type StackContext, use } from 'sst/constructs';
 import { ApiStack } from './ApiStack';
 import { StorageStack } from './StorageStack';
 import * as iam from 'aws-cdk-lib/aws-iam';
@@ -17,7 +17,7 @@ export function AuthStack({ stack, app }: StackContext) {
 			actions: ['s3:*'],
 			effect: iam.Effect.ALLOW,
 			resources: [
-				bucket.bucketArn + '/private/${cognito-identity.amazonaws.com:sub}/*',
+				`${bucket.bucketArn}/private/\${cognito-identity.amazonaws.com:sub}/*`,
 			],
 		}),
 	]);
