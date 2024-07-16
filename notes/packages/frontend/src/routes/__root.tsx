@@ -1,6 +1,6 @@
 import '../App.css';
 import { useState } from 'react';
-import { SunFilled, HomeOutlined, CameraOutlined } from '@ant-design/icons';
+import { SunFilled, HomeOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Grid, Layout, Menu, theme } from 'antd';
 const { Header, Content, Footer } = Layout;

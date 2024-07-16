@@ -1,6 +1,8 @@
 # SST Notes App
 
-This is a simple static site built to practice setting up a front end project, setting up CI/CD pipeline.
+This is a simple static site built to practice setting up the skeleton, and implementing a full stack website. As part of this, I set up linting, all CI/CD workflows, testing, and the folder structures.
+
+This site is a static site, with a ReactTs front-end. I used SST to build the backend, and deploy the application to AWS.
 
 This app connects to a weather API.
 
