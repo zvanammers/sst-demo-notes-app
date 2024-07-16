@@ -9,7 +9,7 @@ import {
 	Progress,
 	Grid,
 } from 'antd';
-const { Text, Title } = Typography;
+const { Text, Title, Paragraph } = Typography;
 import { ReloadOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import inputTextField from '../common/components/inputTextField';
@@ -80,13 +80,23 @@ function Weather() {
 	}
 
 	const isLargeWindow = () => {
-		const { lg } = useBreakpoint();
-		return lg ? lg : false;
+		const { lg, md } = useBreakpoint();
+		return lg || md;
 	};
 
 	return (
 		<div className="p-2">
 			<Row gutter={[16, 16]}>
+				<Col span={24}>
+					<Typography>
+						<Title level={2}>Current Australian Weather</Title>
+						<Paragraph style={{ paddingLeft: '12.5%', paddingRight: '12.5%' }}>
+							On this page, you can search for current weather, for any location
+							in Australia. Use the drop down to select how to search for your
+							location.
+						</Paragraph>
+					</Typography>
+				</Col>
 				<Col span={isLargeWindow() ? '8' : '24'} flex={3}>
 					<Space direction="vertical" size={'large'}>
 						<Card style={{ placeContent: 'center' }}>

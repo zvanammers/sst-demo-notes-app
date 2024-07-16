@@ -30,19 +30,10 @@ function App() {
 			icon: <HomeOutlined />,
 		},
 		{
-			key: 'About',
-			label: (
-				<Link to="/about" className="[&.active]:font-bold">
-					About
-				</Link>
-			),
-			icon: <CameraOutlined />,
-		},
-		{
 			key: 'Weather',
 			label: (
 				<Link to="/weather" className="[&.active]:font-bold">
-					Australian Weather
+					Current Weather
 				</Link>
 			),
 			icon: <SunFilled />,
