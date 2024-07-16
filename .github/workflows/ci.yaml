@@ -14,22 +14,27 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      
       - name: Setup action
         uses: pnpm/action-setup@v3
         with:
           version: 8
+
       - name: Setup pnpm
         uses: actions/setup-node@v3
         with:
           node-version: 20.11.x
           cache: 'pnpm'
           cache-dependency-path: '**/pnpm-lock.yaml'
+
       - name: Install dependencies
         run: pnpm install
         working-directory: ./notes
+
       - name: Lint
         run: pnpm lint
         working-directory: ./notes
+
       - name: Tests
         run: pnpm test
         working-directory: ./notes
