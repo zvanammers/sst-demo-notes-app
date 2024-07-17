@@ -1,13 +1,14 @@
 import '../App.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SunFilled, HomeOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Grid, Layout, Menu, theme } from 'antd';
 const { Header, Content, Footer } = Layout;
-import { Link } from '@tanstack/react-router';
+import { Link, useRouterState } from '@tanstack/react-router';
 import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 import notFound from '../common/components/notFound';
+import getConfig from '../config';
 
 export const Route = createRootRoute({
 	component: App,
@@ -19,6 +20,7 @@ const { useBreakpoint } = Grid;
 type MenuItem = Required<MenuProps>['items'][number];
 
 function App() {
+	const router = useRouterState();
 	const items: MenuItem[] = [
 		{
 			key: 'Home',
@@ -40,11 +42,22 @@ function App() {
 		},
 	];
 
-	const [current, setCurrent] = useState('mail');
+	const [current, setCurrent] = useState('Home');
 
 	const onClick: MenuProps['onClick'] = (e) => {
 		setCurrent(e.key);
 	};
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	useEffect(() => {
+		console.log(router.location);
+		console.log(router.location.pathname);
+		if (router.location.pathname === '/') {
+			setCurrent('Home');
+		} else if (router.location.pathname === '/weather') {
+			setCurrent('Weather');
+		}
+	}, [window.location.pathname]);
 
 	const {
 		token: { colorBgContainer, borderRadiusLG },
@@ -69,7 +82,11 @@ function App() {
 					style={{ flex: 1, minWidth: 0 }}
 				/>
 			</Header>
-			<Content style={isLargeWindow() ? { padding: '48px 48px' } : {}}>
+			<Content
+				style={
+					isLargeWindow() ? { padding: '48px 48px' } : { padding: '16px 16px' }
+				}
+			>
 				<div
 					style={{
 						background: colorBgContainer,
@@ -79,10 +96,14 @@ function App() {
 					}}
 				>
 					<Outlet />
-					<TanStackRouterDevtools />
+					{getConfig() && <TanStackRouterDevtools />}
 				</div>
 			</Content>
-			<Footer style={{ textAlign: 'center' }}>Created by Zoe van Ammers</Footer>
+			{isLargeWindow() && (
+				<Footer style={{ textAlign: 'center' }}>
+					Created by Zoe van Ammers
+				</Footer>
+			)}
 		</Layout>
 	);
 }
