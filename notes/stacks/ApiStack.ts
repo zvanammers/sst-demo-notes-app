@@ -12,7 +12,10 @@ export function ApiStack({ stack }: StackContext) {
 	const api = new Api(stack, 'Api', {
 		cors: {
 			allowMethods: ['GET'],
-			allowOrigins: ['https://d1ms69azgi9yhj.cloudfront.net'], 
+			allowOrigins: [
+				'https://d1ms69azgi9yhj.cloudfront.net',
+				'https://weather.zvanammers.com',
+			],
 		},
 		defaults: {
 			// authorizer: "iam",
