@@ -1,11 +1,11 @@
 import { type StackContext, StaticSite, use } from 'sst/constructs';
 import { ApiStack } from './ApiStack';
-import { AuthStack } from './AuthStack';
 import { StorageStack } from './StorageStack';
+import { Certificate } from "aws-cdk-lib/aws-certificatemanager";
+import { SystemsManager } from "aws-cdk-lib/aws-systemsmanagersap";
 
 export function FrontendStack({ stack, app }: StackContext) {
 	const { api } = use(ApiStack);
-	const { auth } = use(AuthStack);
 	const { bucket } = use(StorageStack);
 
 	const site = new StaticSite(stack, 'ReactSite', {
@@ -17,6 +17,13 @@ export function FrontendStack({ stack, app }: StackContext) {
 			VITE_REGION: app.region,
 			VITE_BUCKET: bucket.bucketName,
 		},
+    customDomain: {
+      domainName: "weather.zvanammers.com",
+      isExternalDomain: true,
+      cdk: {
+        certificate: Certificate.fromCertificateArn(stack, "cert", "arn:aws:acm:us-east-1:381492042854:certificate/4db188e9-a96f-4e6c-8c75-22eff768a0ea")
+      }
+    }
 	});
 
 	stack.addOutputs({
