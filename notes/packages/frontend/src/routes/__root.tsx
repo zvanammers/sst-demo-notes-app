@@ -96,7 +96,7 @@ function App() {
 					}}
 				>
 					<Outlet />
-					{getConfig() && <TanStackRouterDevtools />}
+					{getConfig().dev && <TanStackRouterDevtools />}
 				</div>
 			</Content>
 			{isLargeWindow() && (

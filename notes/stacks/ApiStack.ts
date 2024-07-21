@@ -12,7 +12,7 @@ export function ApiStack({ stack }: StackContext) {
 	const api = new Api(stack, 'Api', {
 		cors: {
 			allowMethods: ['GET'],
-			allowOrigins: ['https://d1jrqg0cz9i57u.cloudfront.net'],
+			allowOrigins: ['https://d1ms69azgi9yhj.cloudfront.net'], 
 		},
 		defaults: {
 			// authorizer: "iam",
