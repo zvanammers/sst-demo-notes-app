@@ -1,12 +1,18 @@
 import { type StackContext, StaticSite, use } from 'sst/constructs';
 import { ApiStack } from './ApiStack';
 import { StorageStack } from './StorageStack';
-import { Certificate } from "aws-cdk-lib/aws-certificatemanager";
-import { SystemsManager } from "aws-cdk-lib/aws-systemsmanagersap";
+import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
+import * as ssm from 'aws-cdk-lib/aws-ssm';
 
 export function FrontendStack({ stack, app }: StackContext) {
 	const { api } = use(ApiStack);
 	const { bucket } = use(StorageStack);
+
+	const certArn = ssm.StringParameter.fromStringParameterAttributes(
+		stack,
+		'certArn',
+		{ parameterName: '/manual/ssl/weather_arn' },
+	).stringValue;
 
 	const site = new StaticSite(stack, 'ReactSite', {
 		path: 'packages/frontend',
@@ -17,13 +23,20 @@ export function FrontendStack({ stack, app }: StackContext) {
 			VITE_REGION: app.region,
 			VITE_BUCKET: bucket.bucketName,
 		},
-    customDomain: {
-      domainName: "weather.zvanammers.com",
-      isExternalDomain: true,
-      cdk: {
-        certificate: Certificate.fromCertificateArn(stack, "cert", "arn:aws:acm:us-east-1:381492042854:certificate/4db188e9-a96f-4e6c-8c75-22eff768a0ea")
-      }
-    }
+		customDomain:
+			app.stageName === 'prod'
+				? {
+						domainName: 'weather.zvanammers.com',
+						isExternalDomain: true,
+						cdk: {
+							certificate: Certificate.fromCertificateArn(
+								stack,
+								'cert',
+								certArn,
+							),
+						},
+					}
+				: undefined,
 	});
 
 	stack.addOutputs({
