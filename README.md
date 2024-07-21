@@ -8,7 +8,7 @@ This app connects to a weather API.
 
 I used SST to develop the AWS resources, and for local development.
 
-Currently hosted at https://d1jrqg0cz9i57u.cloudfront.net.
+Currently hosted at https://weather.zvanammers.com.
 
 ## How to spin up the app for local dev
 

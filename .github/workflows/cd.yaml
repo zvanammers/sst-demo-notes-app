@@ -19,25 +19,30 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup action
         uses: pnpm/action-setup@v3
         with:
           version: 8
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE }}
-        #  role-duration-seconds: 14390 #adjust as needed for your build time
+         role-duration-seconds: 600 #adjust as needed for your build time
           aws-region: ${{ secrets.AWS_REGION }}
+
       - name: Setup pnpm
         uses: actions/setup-node@v3
         with:
           node-version: 20.11.x
           cache: 'pnpm'
           cache-dependency-path: '**/pnpm-lock.yaml'
+
       - name: Install Dependencies
         run: pnpm i
         working-directory: notes
+
       - name: Deploy app
         run: pnpm sst deploy --stage prod
         working-directory: notes
