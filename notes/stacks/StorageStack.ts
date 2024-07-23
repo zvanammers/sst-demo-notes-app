@@ -1,4 +1,4 @@
-import { Bucket, StackContext, Table } from 'sst/constructs';
+import { Bucket, type StackContext, Table } from 'sst/constructs';
 
 export function StorageStack({ stack }: StackContext) {
 	const bucket = new Bucket(stack, 'Uploads');
@@ -10,5 +10,26 @@ export function StorageStack({ stack }: StackContext) {
 		},
 		primaryIndex: { partitionKey: 'userId', sortKey: 'noteId' },
 	});
-	return { bucket, table };
+
+	const locationsTable = new Table(stack, 'savedLocations', {
+		fields: {
+			name: 'string',
+			// time: 'number',
+			// temperature: 'string',
+		},
+		primaryIndex: { partitionKey: 'name' }, // , sortKey: 'time' },
+	});
+
+	const dailyUpdateLimitsTable = new Table(stack, 'DailyUpdateLimits', {
+		fields: {
+			tableName: 'string',
+			updateCount: 'number',
+			limit: 'number',
+			// expireAt: "number",
+		},
+		primaryIndex: { partitionKey: 'tableName' },
+		timeToLiveAttribute: 'expireAt',
+	});
+
+	return { bucket, table, locationsTable, dailyUpdateLimitsTable };
 }

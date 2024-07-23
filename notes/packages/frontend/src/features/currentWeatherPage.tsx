@@ -8,13 +8,28 @@ import {
 	Typography,
 	Progress,
 	Grid,
+	Button,
 } from 'antd';
 const { Text, Title, Paragraph } = Typography;
-import { ReloadOutlined } from '@ant-design/icons';
-import { useState } from 'react';
+import Icon, { ReloadOutlined } from '@ant-design/icons';
+import { useEffect, useState } from 'react';
 import inputTextField from '../common/components/inputTextField';
 import { type IconComponent, getWeatherIcon } from '../common/weatherIcons';
 import { useGetCurrentWeather } from '../api/endpoints/weather';
+import Bookmark from '@phosphor-icons/core/duotone/bookmark-duotone.svg?react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import type currentWeather from '@models/currentWeather';
+import {
+	useSaveLocation,
+	useGetSavedLocations,
+} from '../api/endpoints/location';
+import { queryClient } from '../main';
+
+interface keyValuePair {
+	value: string;
+	label: string;
+}
+[];
 
 function Weather() {
 	const [lat, setLat] = useState('');
@@ -22,18 +37,54 @@ function Weather() {
 	const [locationType, setLocationType] = useState('City');
 	const [postcode, setPostcode] = useState('');
 	const [city, setCity] = useState('Sydney');
+	const [listOfSavedLocations, setListOfSavedLocations] = useState<keyValuePair[]>();
 
 	const { useBreakpoint } = Grid;
 
-	const { isLoading, data, refetch, isFetching, error } = useGetCurrentWeather({
-		locationType,
-		lat,
-		lon,
-		postcode,
-		city,
+	const { isLoading, data, refetch, isFetching, error } =
+		useQuery<currentWeather>({
+			queryKey: ['weather'],
+			queryFn: () =>
+				useGetCurrentWeather({
+					locationType,
+					lat,
+					lon,
+					postcode,
+					city,
+				}),
+			refetchOnWindowFocus: false,
+		});
+
+	const {
+		isLoading: isLocationsLoading,
+		data: savedLocations,
+		error: locationsError,
+	} = useQuery<{ count: number; items: { name: string }[] }>({
+		queryKey: ['savedLocations'],
+		queryFn: useGetSavedLocations,
+		refetchOnWindowFocus: false,
 	});
 
-	const onClick = () => {
+	useEffect(() => {
+		if (!savedLocations || savedLocations.count === 0) {
+			return;
+		}
+		const list: keyValuePair[] = [];
+		for (const x of savedLocations.items) {
+			list.push({ value: x.name, label: x.name } as keyValuePair);
+		}
+		setListOfSavedLocations(list);
+		console.log(savedLocations);
+	}, [savedLocations]);
+
+	const saveLocation = useMutation({
+		mutationFn: useSaveLocation,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['savedLocations'] });
+		},
+	});
+
+	const onRefetchClick = () => {
 		refetch();
 	};
 
@@ -44,14 +95,14 @@ function Weather() {
 					'Latitude',
 					lat,
 					setLat,
-					onClick,
+					onRefetchClick,
 					<div style={{ width: 60 }}>Latitude</div>,
 				)}
 				{inputTextField(
 					'Longitude',
 					lon,
 					setLon,
-					onClick,
+					onRefetchClick,
 					<div style={{ width: 60 }}>Longitude</div>,
 				)}
 			</>
@@ -68,7 +119,6 @@ function Weather() {
 		navigator.geolocation.getCurrentPosition(
 			(position) => {
 				const { latitude, longitude } = position.coords;
-				console.log(latitude, longitude);
 				setLat(latitude.toString());
 				setLon(longitude.toString());
 			},
@@ -101,16 +151,17 @@ function Weather() {
 						</Typography>
 					</Col>
 				)}
-				<Col span={isLargeWindow() ? '8' : '24'} flex={3}>
-					<Space direction="vertical" size={'large'}>
+				<Col span={isLargeWindow() ? '8' : '24'}>
+					<Space direction="vertical" style={{width: '100%' }} size={'large'}>
 						<Card style={{ placeContent: 'center' }}>
-							<Flex vertical gap={12}>
+							<Flex vertical gap={12} >
 								<Select
 									defaultValue="City"
 									style={{ width: '100%' }}
 									onChange={setLocationType}
 									options={[
 										{ value: 'City', label: 'City' },
+										{ value: 'Bookmarks', label: 'Bookmarked Cities' },
 										{ value: 'Postcode', label: 'Postcode' },
 										{ value: 'Lat', label: 'Lat/Lon' },
 										{ value: 'Location', label: 'Your Location' },
@@ -120,23 +171,36 @@ function Weather() {
 									latLongUI()}
 								{locationType === 'Postcode' &&
 									inputTextField(
-										'Postcode',
+										locationType,
 										postcode,
 										setPostcode,
-										onClick,
-										'Postcode',
+										onRefetchClick,
+										locationType,
 									)}
 								{locationType === 'City' &&
-									inputTextField('City', city, setCity, onClick, 'City')}
+									inputTextField(
+										locationType,
+										city,
+										setCity,
+										onRefetchClick,
+										locationType,
+									)}
+								{locationType === 'Bookmarks' && !locationsError && (
+									<Select
+										style={{ width: '100%' }}
+										options={listOfSavedLocations}
+										loading={isLocationsLoading}
+									/>
+								)}
 							</Flex>
 						</Card>
 					</Space>
 				</Col>
-				<Col flex={3} span={isLargeWindow() ? '16' : '24'}>
+				<Col span={isLargeWindow() ? '16' : '24'}>
 					<Card
-						onClick={onClick}
-						loading={isLoading || isFetching}
-						actions={[<ReloadOutlined key="fetch weather" />]}
+						loading={ isLoading || isFetching}
+						actions={[<ReloadOutlined style={{width: '21px'}}  key="fetch weather" onClick={onRefetchClick} />, 
+						<Bookmark style={{width: '21px'}} key="fetch weather" onClick={() => {saveLocation.mutate(data?.name ?? '')}} />]}
 					>
 						{error !== null || !data ? (
 							<>Weather data could not be fetched</>
@@ -158,7 +222,6 @@ function Weather() {
 										hourCycle: 'h12',
 									})}
 								</Text>
-
 								<Text>
 									Sunset:{' '}
 									{new Date(data.sys.sunset * 1000 + 3600).toLocaleTimeString(

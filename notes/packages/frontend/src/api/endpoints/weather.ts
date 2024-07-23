@@ -1,6 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
 import getConfig from '../../config';
-import type currentWeather from '@models/currentWeather';
 import axios from 'axios';
 import type { FetchCurrentWeather } from '../models/fetchCurrentWeather';
 
@@ -30,17 +28,27 @@ const formatQueryStrings = (fetchCurrentWeather: FetchCurrentWeather) => {
 	return '';
 };
 
-export function useGetCurrentWeather(fetchCurrentWeather: FetchCurrentWeather) {
-	return useQuery<currentWeather>({
-		queryKey: ['weather'],
-		queryFn: () =>
-			axios
-				.get(
-					`${getConfig().apiUrl}/weather${formatQueryStrings(
-						fetchCurrentWeather,
-					)}`,
-				)
-				.then((res) => res.data),
-		refetchOnWindowFocus: false,
-	});
+export async function useGetCurrentWeather(
+	fetchCurrentWeather: FetchCurrentWeather,
+) {
+	const res = await axios.get(
+		`${getConfig().apiUrl}/weather${formatQueryStrings(fetchCurrentWeather)}`,
+	);
+	return res.data;
 }
+// QueryFunction<currentWeather, QueryKey, never> | undefined
+
+// export function useGetCurrentWeather(fetchCurrentWeather: FetchCurrentWeather) {
+// 	return useQuery<currentWeather>({
+// 		queryKey: ['weather'],
+// 		queryFn: () =>
+// 			axios
+// 				.get(
+// 					`${getConfig().apiUrl}/weather${formatQueryStrings(
+// 						fetchCurrentWeather,
+// 					)}`,
+// 				)
+// 				.then((res) => res.data),
+// 		refetchOnWindowFocus: false,
+// 	});
+// }

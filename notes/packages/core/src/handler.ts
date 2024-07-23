@@ -1,16 +1,32 @@
 import type { Context, APIGatewayProxyEvent } from 'aws-lambda';
 
+interface ReturnWithStatus {
+	statusCode: number;
+	body: string;
+}
+
 export default function handler(
-	lambda: (evt: APIGatewayProxyEvent, context: Context) => Promise<string>,
+	lambda: (
+		evt: APIGatewayProxyEvent,
+		context: Context,
+	) => Promise<string> | Promise<ReturnWithStatus>,
 ) {
 	return async (event: APIGatewayProxyEvent, context: Context) => {
-		// biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
-		// biome-ignore lint/style/useSingleVarDeclarator: <explanation>
-		let body, statusCode;
+		let body: string | ReturnWithStatus;
+		let response: string | ReturnWithStatus;
+		let statusCode: number;
 
 		try {
-			body = await lambda(event, context);
-			statusCode = 200;
+			response = await lambda(event, context);
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			if (typeof response !== 'string' && 'statusCode' in (response as any)) {
+				response = response as ReturnWithStatus;
+				statusCode = response.statusCode;
+				body = response.body;
+			} else {
+				statusCode = 200;
+				body = response;
+			}
 		} catch (error) {
 			statusCode = 500;
 			body = JSON.stringify({
@@ -27,3 +43,5 @@ export default function handler(
 		};
 	};
 }
+
+export type { ReturnWithStatus };

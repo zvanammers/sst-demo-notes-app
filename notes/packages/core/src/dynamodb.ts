@@ -1,5 +1,5 @@
 import AWS from 'aws-sdk';
-import { DocumentClient } from 'aws-sdk/clients/dynamodb';
+import type { DocumentClient } from 'aws-sdk/clients/dynamodb';
 
 const client = new AWS.DynamoDB.DocumentClient();
 
@@ -11,4 +11,5 @@ export default {
 		client.update(params).promise(),
 	delete: (params: DocumentClient.DeleteItemInput) =>
 		client.delete(params).promise(),
+	scan: (params: DocumentClient.ScanInput) => client.scan(params).promise(),
 };

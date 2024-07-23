@@ -15,8 +15,6 @@ function isValidNumber(str: string) {
 }
 
 export const main = handler(async (event) => {
-	console.log(JSON.stringify(event.queryStringParameters));
-
 	if (!event.queryStringParameters) {
 		return '';
 	}
@@ -59,7 +57,6 @@ export const main = handler(async (event) => {
 				`https://api.openweathermap.org/geo/1.0/direct?q=${city},AU&limit=1&appid=${Config.WEATHER_API_SECRET_KEY}`,
 			);
 			const data = (await response.json()) as CityInfo[];
-			console.log(data);
 			const cityInfo = data[0];
 			lat = cityInfo.lat.toString();
 			lon = cityInfo.lon.toString();

@@ -14,7 +14,7 @@ declare module '@tanstack/react-router' {
 	}
 }
 
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
 	defaultOptions: {
 		queries: {
 			retry: 2,
@@ -24,7 +24,6 @@ const queryClient = new QueryClient({
 
 // biome-ignore lint/style/noNonNullAssertion: <explanation>
 const rootElement = document.getElementById('app')!;
-console.log(rootElement);
 if (!rootElement.innerHTML) {
 	const root = createRoot(rootElement);
 	root.render(
