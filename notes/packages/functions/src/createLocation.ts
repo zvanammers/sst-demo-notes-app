@@ -35,12 +35,10 @@ export const main = handler(async (event) => {
 
 	const keyInTable = await dynamoDb.get(keyParams);
 
-	console.log('is key in table?: ', keyInTable);
-
 	if (keyInTable.Item !== undefined) {
 		return {
 			statusCode: 200,
-			body: JSON.stringify({ message: 'Location already bookmarked' }),
+			body: JSON.stringify({ message: data.name + ' is already bookmarked' }),
 		};
 	}
 
@@ -48,8 +46,6 @@ export const main = handler(async (event) => {
 		TableName: Table.savedLocations.tableName,
 		Item: {
 			name: data.name,
-			// time: data.time,
-			// temperature: data.temperature,
 			createdAt: Date.now(),
 		},
 	};

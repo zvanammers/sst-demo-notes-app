@@ -22,7 +22,7 @@ const formatQueryStrings = (fetchCurrentWeather: FetchCurrentWeather) => {
 	if (fetchCurrentWeather.locationType === 'Postcode') {
 		return `?postcode=${fetchCurrentWeather.postcode}`;
 	}
-	if (fetchCurrentWeather.locationType === 'City') {
+	if (fetchCurrentWeather.locationType === 'City' || fetchCurrentWeather.locationType === 'Bookmarks') {
 		return `?city=${fetchCurrentWeather.city}`;
 	}
 	return '';

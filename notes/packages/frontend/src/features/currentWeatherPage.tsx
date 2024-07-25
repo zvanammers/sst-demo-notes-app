@@ -8,7 +8,8 @@ import {
 	Typography,
 	Progress,
 	Grid,
-	Button,
+	message,
+	Tooltip,
 } from 'antd';
 const { Text, Title, Paragraph } = Typography;
 import Icon, { ReloadOutlined } from '@ant-design/icons';
@@ -38,8 +39,17 @@ function Weather() {
 	const [postcode, setPostcode] = useState('');
 	const [city, setCity] = useState('Sydney');
 	const [listOfSavedLocations, setListOfSavedLocations] = useState<keyValuePair[]>();
+	const [savedCity, setSavedCity] = useState('');
 
+	const [messageApi, contextHolder] = message.useMessage();
 	const { useBreakpoint } = Grid;
+
+	const success = (message: string) => {
+		messageApi.open({
+			type: 'success',
+			content: message,
+		})
+	}
 
 	const { isLoading, data, refetch, isFetching, error } =
 		useQuery<currentWeather>({
@@ -50,7 +60,7 @@ function Weather() {
 					lat,
 					lon,
 					postcode,
-					city,
+					city: locationType === 'City' ? city : savedCity
 				}),
 			refetchOnWindowFocus: false,
 		});
@@ -72,15 +82,23 @@ function Weather() {
 		const list: keyValuePair[] = [];
 		for (const x of savedLocations.items) {
 			list.push({ value: x.name, label: x.name } as keyValuePair);
-		}
+		}		
 		setListOfSavedLocations(list);
-		console.log(savedLocations);
 	}, [savedLocations]);
 
-	const saveLocation = useMutation({
+	const {
+		mutate: saveLocationMutation,
+	} = useMutation({
 		mutationFn: useSaveLocation,
-		onSuccess: () => {
+		onSuccess: (data) => {
 			queryClient.invalidateQueries({ queryKey: ['savedLocations'] });
+			let message = '';
+			if ('message' in data) {
+				message = data.message;
+			} else if ('name' in data) {
+				message = data.name + ' has been bookmarked'
+			}
+			success(message);
 		},
 	});
 
@@ -124,7 +142,7 @@ function Weather() {
 			},
 
 			(error) => {
-				console.error('Error get user location: ', error);
+				console.error('Error: get user location: ', error);
 			},
 		);
 	}
@@ -135,7 +153,10 @@ function Weather() {
 	};
 
 	return (
+		<>
+		{contextHolder}
 		<div className="p-2">
+		{isLargeWindow() && <script>alert('hello')</script>}
 			<Row gutter={[16, 16]}>
 				{isLargeWindow() && (
 					<Col span={24}>
@@ -190,6 +211,8 @@ function Weather() {
 										style={{ width: '100%' }}
 										options={listOfSavedLocations}
 										loading={isLocationsLoading}
+										onChange={setSavedCity}
+										defaultValue={savedCity}
 									/>
 								)}
 							</Flex>
@@ -199,8 +222,22 @@ function Weather() {
 				<Col span={isLargeWindow() ? '16' : '24'}>
 					<Card
 						loading={ isLoading || isFetching}
-						actions={[<ReloadOutlined style={{width: '21px'}}  key="fetch weather" onClick={onRefetchClick} />, 
-						<Bookmark style={{width: '21px'}} key="fetch weather" onClick={() => {saveLocation.mutate(data?.name ?? '')}} />]}
+						actions={[
+							<Tooltip title="Refetch">
+								<ReloadOutlined style={{width: '21px'}}  key="fetch weather" onClick={onRefetchClick} />
+							</Tooltip>,
+							<Tooltip title="Bookmark Location">
+								<Icon
+									style={{ fontSize: '21px' }}
+									component={Bookmark}
+									key="fetch weather"
+									onClick={() => {
+										if (data?.name) {
+											saveLocationMutation(data?.name ?? '')
+										}
+										}} />
+							</Tooltip>
+							]}
 					>
 						{error !== null || !data ? (
 							<>Weather data could not be fetched</>
@@ -235,6 +272,7 @@ function Weather() {
 				</Col>
 			</Row>
 		</div>
+		</>
 	);
 }
 
