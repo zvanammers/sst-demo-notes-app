@@ -65,5 +65,5 @@ export const main = handler(async (event) => {
 		body: JSON.stringify({
 			message: `${event?.pathParameters?.id} un-bookmarked`,
 		}),
-	};
+	} as ReturnWithStatus;
 });

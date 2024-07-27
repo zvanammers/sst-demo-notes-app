@@ -65,6 +65,14 @@ function Weather() {
 		});
 	};
 
+	const loadingToast = (message: string) => {
+		messageApi.open({
+			type: 'loading',
+			content: message,
+			duration: 1.5,
+		});
+	};
+
 	const { isLoading, data, refetch, isFetching, error } =
 		useQuery<currentWeather>({
 			queryKey: ['weather'],
@@ -108,6 +116,9 @@ function Weather() {
 			const message = (response?.data as any).message;
 			errorToast(message);
 		},
+		onMutate: () => {
+			infoToast('Bookmarking location now ...');
+		},
 		onSuccess: (data) => {
 			queryClient.invalidateQueries({ queryKey: ['savedLocations'] });
 			if ('message' in data) {
@@ -121,11 +132,9 @@ function Weather() {
 	const { mutate: deleteLocationMutation } = useMutation({
 		mutationFn: useDeleteLocations,
 		onMutate: () => {
-			// console.log('Invalidating savedLocations on success');
-			// queryClient.invalidateQueries({ queryKey: ['savedLocations'] });
+			loadingToast('Removing bookmark now ...');
 		},
 		onSuccess: (data) => {
-			console.log('Invalidating savedLocations on success');
 			infoToast(data?.message);
 			setSavedCity('');
 			queryClient.invalidateQueries({ queryKey: ['savedLocations'] });
@@ -163,19 +172,23 @@ function Weather() {
 			: '',
 	);
 
-	if (navigator.geolocation && locationType === 'Location') {
-		navigator.geolocation.getCurrentPosition(
-			(position) => {
-				const { latitude, longitude } = position.coords;
-				setLat(latitude.toString());
-				setLon(longitude.toString());
-			},
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	useEffect(() => {
+		if (navigator.geolocation && locationType === 'Location') {
+			loadingToast('Fetching your co-ordinates now ...');
+			navigator.geolocation.getCurrentPosition(
+				(position) => {
+					const { latitude, longitude } = position.coords;
+					setLat(latitude.toString());
+					setLon(longitude.toString());
+				},
 
-			(error) => {
-				console.error('Error: cannot get user location: ', error);
-			},
-		);
-	}
+				(error) => {
+					console.error('Error: cannot get user location: ', error);
+				},
+			);
+		}
+	}, [locationType]);
 
 	const isLargeWindow = () => {
 		const { lg, md } = useBreakpoint();

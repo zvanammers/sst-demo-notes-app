@@ -1,6 +1,6 @@
 import { Table } from 'sst/node/table';
 import dynamoDb from '@notes/core/dynamodb';
-import handler from '@notes/core/handler';
+import handler, { type ReturnWithStatus } from '@notes/core/handler';
 import type { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import type { SavedLocationFields } from 'models/savedLocationFields';
 
@@ -28,7 +28,7 @@ export const main = handler(async (event) => {
 			body: JSON.stringify({
 				message: 'Cannot save location, name is required in body.',
 			}),
-		};
+		} as ReturnWithStatus;
 	}
 
 	// Section B: Current Data Check
@@ -105,5 +105,5 @@ export const main = handler(async (event) => {
 	return {
 		statusCode: 200,
 		body: JSON.stringify(SavedLocationsPutParams.Item as SavedLocationFields),
-	};
+	} as ReturnWithStatus;
 });

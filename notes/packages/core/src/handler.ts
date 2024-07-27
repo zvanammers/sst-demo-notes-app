@@ -1,5 +1,8 @@
 import type { Context, APIGatewayProxyEvent } from 'aws-lambda';
 
+export interface ErrorMessage {
+	message: string;
+}
 interface ReturnWithStatus {
 	statusCode: number;
 	body: string;

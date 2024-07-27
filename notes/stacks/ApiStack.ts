@@ -25,16 +25,11 @@ export function ApiStack({ stack }: StackContext) {
 			},
 			// authorizer: "iam",
 			function: {
-				bind: [
-					table,
-					locationsTable,
-					countTable,
-					WEATHER_API_SECRET_KEY,
-				],
+				bind: [table, locationsTable, countTable, WEATHER_API_SECRET_KEY],
 			},
 		},
 		routes: {
-			'GET /weather': 'packages/functions/src/weather.main',
+			'GET /weather': 'packages/functions/src/getCurrentWeatherStats.main',
 			'POST /location': 'packages/functions/src/createLocation.main',
 			'GET /locations': 'packages/functions/src/getLocations.main',
 			'DELETE /location/{id}': 'packages/functions/src/deleteLocation.main',
