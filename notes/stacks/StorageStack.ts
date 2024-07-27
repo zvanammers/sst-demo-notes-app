@@ -14,10 +14,8 @@ export function StorageStack({ stack }: StackContext) {
 	const locationsTable = new Table(stack, 'SavedLocations', {
 		fields: {
 			name: 'string',
-			// time: 'number',
-			// temperature: 'string',
 		},
-		primaryIndex: { partitionKey: 'name' }, // , sortKey: 'time' },
+		primaryIndex: { partitionKey: 'name' },
 	});
 
 	const countTable = new Table(stack, 'Counts', {
@@ -26,10 +24,8 @@ export function StorageStack({ stack }: StackContext) {
 			dailyUpdateCount: 'number',
 			recordCount: 'number',
 			version: 'number',
-			// expireAt: "number",
 		},
 		primaryIndex: { partitionKey: 'tableName' },
-		timeToLiveAttribute: 'expireAt',
 	});
 
 	return { bucket, table, locationsTable, countTable };
