@@ -22,7 +22,10 @@ const formatQueryStrings = (fetchCurrentWeather: FetchCurrentWeather) => {
 	if (fetchCurrentWeather.locationType === 'Postcode') {
 		return `?postcode=${fetchCurrentWeather.postcode}`;
 	}
-	if (fetchCurrentWeather.locationType === 'City' || fetchCurrentWeather.locationType === 'Bookmarks') {
+	if (
+		fetchCurrentWeather.locationType === 'City' ||
+		fetchCurrentWeather.locationType === 'Bookmarks'
+	) {
 		return `?city=${fetchCurrentWeather.city}`;
 	}
 	return '';
@@ -36,19 +39,3 @@ export async function useGetCurrentWeather(
 	);
 	return res.data;
 }
-// QueryFunction<currentWeather, QueryKey, never> | undefined
-
-// export function useGetCurrentWeather(fetchCurrentWeather: FetchCurrentWeather) {
-// 	return useQuery<currentWeather>({
-// 		queryKey: ['weather'],
-// 		queryFn: () =>
-// 			axios
-// 				.get(
-// 					`${getConfig().apiUrl}/weather${formatQueryStrings(
-// 						fetchCurrentWeather,
-// 					)}`,
-// 				)
-// 				.then((res) => res.data),
-// 		refetchOnWindowFocus: false,
-// 	});
-// }
