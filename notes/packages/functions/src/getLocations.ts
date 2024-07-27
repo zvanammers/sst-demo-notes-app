@@ -5,7 +5,7 @@ import handler from '@notes/core/handler';
 export const main = handler(async (event) => {
 
 	const keyParams = {
-		TableName: Table.savedLocations.tableName,
+		TableName: Table.SavedLocations.tableName,
 	};
 
 	const keysInTable = await dynamoDb.scan(keyParams);

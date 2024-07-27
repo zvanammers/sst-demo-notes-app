@@ -2,7 +2,7 @@ import { Api, Config, type StackContext, use } from 'sst/constructs';
 import { StorageStack } from './StorageStack';
 
 export function ApiStack({ stack }: StackContext) {
-	const { table, locationsTable, dailyUpdateLimitsTable } = use(StorageStack);
+	const { table, locationsTable, countTable } = use(StorageStack);
 
 	const WEATHER_API_SECRET_KEY = new Config.Secret(
 		stack,
@@ -11,7 +11,7 @@ export function ApiStack({ stack }: StackContext) {
 
 	const api = new Api(stack, 'Api', {
 		cors: {
-			allowMethods: ['GET', 'POST'],
+			allowMethods: ['GET', 'POST', 'DELETE'],
 			// allowOrigins: [
 			// 	'https://d1ms69azgi9yhj.cloudfront.net',
 			// 	'https://weather.zvanammers.com',
@@ -28,7 +28,7 @@ export function ApiStack({ stack }: StackContext) {
 				bind: [
 					table,
 					locationsTable,
-					dailyUpdateLimitsTable,
+					countTable,
 					WEATHER_API_SECRET_KEY,
 				],
 			},
@@ -37,6 +37,7 @@ export function ApiStack({ stack }: StackContext) {
 			'GET /weather': 'packages/functions/src/weather.main',
 			'POST /location': 'packages/functions/src/createLocation.main',
 			'GET /locations': 'packages/functions/src/getLocations.main',
+			'DELETE /location/{id}': 'packages/functions/src/deleteLocation.main',
 		},
 	});
 

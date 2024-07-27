@@ -11,7 +11,7 @@ export function StorageStack({ stack }: StackContext) {
 		primaryIndex: { partitionKey: 'userId', sortKey: 'noteId' },
 	});
 
-	const locationsTable = new Table(stack, 'savedLocations', {
+	const locationsTable = new Table(stack, 'SavedLocations', {
 		fields: {
 			name: 'string',
 			// time: 'number',
@@ -20,16 +20,17 @@ export function StorageStack({ stack }: StackContext) {
 		primaryIndex: { partitionKey: 'name' }, // , sortKey: 'time' },
 	});
 
-	const dailyUpdateLimitsTable = new Table(stack, 'DailyUpdateLimits', {
+	const countTable = new Table(stack, 'Counts', {
 		fields: {
 			tableName: 'string',
-			updateCount: 'number',
-			limit: 'number',
+			dailyUpdateCount: 'number',
+			recordCount: 'number',
+			version: 'number',
 			// expireAt: "number",
 		},
 		primaryIndex: { partitionKey: 'tableName' },
 		timeToLiveAttribute: 'expireAt',
 	});
 
-	return { bucket, table, locationsTable, dailyUpdateLimitsTable };
+	return { bucket, table, locationsTable, countTable };
 }

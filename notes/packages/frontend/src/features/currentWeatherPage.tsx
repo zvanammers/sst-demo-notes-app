@@ -10,6 +10,7 @@ import {
 	Grid,
 	message,
 	Tooltip,
+	Button,
 } from 'antd';
 const { Text, Title, Paragraph } = Typography;
 import Icon, { ReloadOutlined } from '@ant-design/icons';
@@ -23,14 +24,14 @@ import type currentWeather from '@models/currentWeather';
 import {
 	useSaveLocation,
 	useGetSavedLocations,
+	useDeleteLocations,
 } from '../api/endpoints/location';
 import { queryClient } from '../main';
 
 interface keyValuePair {
 	value: string;
 	label: string;
-}
-[];
+}[];
 
 function Weather() {
 	const [lat, setLat] = useState('');
@@ -44,9 +45,16 @@ function Weather() {
 	const [messageApi, contextHolder] = message.useMessage();
 	const { useBreakpoint } = Grid;
 
-	const success = (message: string) => {
+	const successToast = (message: string) => {
 		messageApi.open({
 			type: 'success',
+			content: message,
+		})
+	}
+
+	const infoToast = (message: string) => {
+		messageApi.open({
+			type: 'info',
 			content: message,
 		})
 	}
@@ -92,13 +100,20 @@ function Weather() {
 		mutationFn: useSaveLocation,
 		onSuccess: (data) => {
 			queryClient.invalidateQueries({ queryKey: ['savedLocations'] });
-			let message = '';
 			if ('message' in data) {
-				message = data.message;
+				infoToast(data.message);
 			} else if ('name' in data) {
-				message = data.name + ' has been bookmarked'
+				successToast(data.name + ' is now bookmarked');
 			}
-			success(message);
+		},
+	});
+
+	const { mutate: deleteLocationMutation } = useMutation({
+		mutationFn: useDeleteLocations,
+		onSuccess: (data) => {
+			queryClient.invalidateQueries({ queryKey: ['savedLocations'] });
+			infoToast(data?.message);
+			setSavedCity('')
 		},
 	});
 
@@ -207,13 +222,21 @@ function Weather() {
 										locationType,
 									)}
 								{locationType === 'Bookmarks' && !locationsError && (
-									<Select
-										style={{ width: '100%' }}
-										options={listOfSavedLocations}
-										loading={isLocationsLoading}
-										onChange={setSavedCity}
-										defaultValue={savedCity}
-									/>
+									<>
+										<Select
+											style={{ width: '100%' }}
+											options={listOfSavedLocations}
+											loading={isLocationsLoading}
+											onChange={setSavedCity}
+											value={savedCity}
+										/>
+										<Button danger
+											disabled={savedCity == ''}
+											onClick={() => deleteLocationMutation(savedCity)}
+										>
+											Remove Bookmark
+										</Button>
+									</>
 								)}
 							</Flex>
 						</Card>
@@ -224,7 +247,11 @@ function Weather() {
 						loading={ isLoading || isFetching}
 						actions={[
 							<Tooltip title="Refetch">
-								<ReloadOutlined style={{width: '21px'}}  key="fetch weather" onClick={onRefetchClick} />
+								<ReloadOutlined 
+								style={{width: '21px'}}
+								key="fetch weather"
+								onClick={onRefetchClick}
+								/>
 							</Tooltip>,
 							<Tooltip title="Bookmark Location">
 								<Icon
@@ -234,8 +261,8 @@ function Weather() {
 									onClick={() => {
 										if (data?.name) {
 											saveLocationMutation(data?.name ?? '')
-										}
-										}} />
+									}}}
+								/>
 							</Tooltip>
 							]}
 					>

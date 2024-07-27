@@ -12,4 +12,5 @@ export default {
 	delete: (params: DocumentClient.DeleteItemInput) =>
 		client.delete(params).promise(),
 	scan: (params: DocumentClient.ScanInput) => client.scan(params).promise(),
+	transactWriteItem: (params: DocumentClient.TransactWriteItemsInput) => client.transactWrite(params).promise(),
 };
