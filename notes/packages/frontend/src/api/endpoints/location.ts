@@ -5,7 +5,6 @@ export async function useSaveLocation(name: string) {
 	const res = await axios.post(`${getConfig().apiUrl}/location`, {
 		name: name,
 	});
-
 	return res.data;
 }
 

@@ -2,6 +2,7 @@ import { Table } from 'sst/node/table';
 import dynamoDb from '@notes/core/dynamodb';
 import handler from '@notes/core/handler';
 import type { DocumentClient } from 'aws-sdk/clients/dynamodb';
+import type { SavedLocationFields } from 'models/savedLocationFields';
 
 interface body {
 	name: string;
@@ -10,7 +11,7 @@ interface body {
 }
 
 export const main = handler(async (event) => {
-	// Section A: Input Checking 
+	// Section A: Input Checking
 	let data: body = {
 		name: '',
 		time: 0,
@@ -39,7 +40,7 @@ export const main = handler(async (event) => {
 	if (existingLocationData.Item !== undefined) {
 		return {
 			statusCode: 200,
-			body: JSON.stringify({ message: data.name + ' is already bookmarked' }),
+			body: JSON.stringify({ message: `${data.name} is already bookmarked` }),
 		};
 	}
 
@@ -57,70 +58,52 @@ export const main = handler(async (event) => {
 		Key: { tableName: Table.SavedLocations.tableName },
 	});
 
-	// if (countTable.Item == undefined) {
-	// 	const countTableParams = {
-	// 		TableName: Table.Counts.tableName,
-	// 		Item: {
-	// 			tableName: Table.SavedLocations.tableName,
-	// 			dailyUpdateCount: 1,
-	// 			recordCount: 1,
-	// 		} as CountTableFields,
-	// 	} as DocumentClient.Put;
-
-	// 	try {
-	// 		const transaction = {
-	// 			TransactItems: [
-	// 				{ Put: countTableParams}]
-	// 		} as DocumentClient.TransactWriteItemsInput;
-
-	// 		await dynamoDb.transactWriteItem(transaction);
-	// 	} catch (error) {
-	// 		console.log(error)
-	// 		throw new Error('Could not saved location')
-	// 	}
-	// 	return {
-	// 		statusCode: 200,
-	// 		body: JSON.stringify(SavedLocationsParams.Item),
-	// 	};
-	// }
-
-	let recordVersion = countTable.Item?.version as number;
-	recordVersion = recordVersion ?? 0;
-
-	let recordCount = countTable.Item?.version as number;
-	recordCount = recordCount ?? 0;
+	const recordCount = (countTable.Item?.recordCount as number) ?? 0;
+	if (recordCount >= 10) {
+		return {
+			statusCode: 400,
+			body: JSON.stringify({
+				message: '10 locations have been bookmarked already',
+			}),
+		};
+	}
+	const recordVersion = (countTable.Item?.version as number) ?? 0;
+	const conditionExpression =
+		recordCount !== undefined ? '#version = :currentVersion' : undefined;
 
 	const countTableParams = {
 		TableName: Table.Counts.tableName,
-		Key: {'tableName': Table.SavedLocations.tableName},
-		UpdateExpression: "set #recordCount = :newRecordCount, #version = :newVersion",
-		ConditionExpression: "#version = :currentVersion",
-		ExpressionAttributeNames: { 
-			"#recordCount": "recordCount",
-			"#version": "version"
+		Key: { tableName: Table.SavedLocations.tableName },
+		UpdateExpression:
+			'set #recordCount = :newRecordCount, #version = :newVersion',
+		ConditionExpression: conditionExpression,
+		ExpressionAttributeNames: {
+			'#recordCount': 'recordCount',
+			'#version': 'version',
 		},
 		ExpressionAttributeValues: {
-			":newRecordCount": recordCount + 1,
-			":currentVersion": recordVersion,
-			":newVersion": recordVersion + 1,
-		}
+			':newRecordCount': recordCount + 1,
+			':currentVersion': recordVersion,
+			':newVersion': recordVersion + 1,
+		},
 	} as DocumentClient.Update;
 
 	// Section D: DB Transaction
 	try {
 		const transaction = {
 			TransactItems: [
-				{ Put: SavedLocationsPutParams }, { Update: countTableParams }
-			]
+				{ Put: SavedLocationsPutParams },
+				{ Update: countTableParams },
+			],
 		} as DocumentClient.TransactWriteItemsInput;
 
 		await dynamoDb.transactWriteItem(transaction);
 	} catch (error) {
-		throw new Error('Could not saved location')
+		throw new Error('Could not saved location');
 	}
 
 	return {
 		statusCode: 200,
-		body: JSON.stringify(SavedLocationsPutParams.Item),
+		body: JSON.stringify(SavedLocationsPutParams.Item as SavedLocationFields),
 	};
 });
