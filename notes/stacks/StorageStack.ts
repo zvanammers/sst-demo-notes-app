@@ -1,4 +1,4 @@
-import { Bucket, StackContext, Table } from 'sst/constructs';
+import { Bucket, type StackContext, Table } from 'sst/constructs';
 
 export function StorageStack({ stack }: StackContext) {
 	const bucket = new Bucket(stack, 'Uploads');
@@ -10,5 +10,23 @@ export function StorageStack({ stack }: StackContext) {
 		},
 		primaryIndex: { partitionKey: 'userId', sortKey: 'noteId' },
 	});
-	return { bucket, table };
+
+	const locationsTable = new Table(stack, 'SavedLocations', {
+		fields: {
+			name: 'string',
+		},
+		primaryIndex: { partitionKey: 'name' },
+	});
+
+	const countTable = new Table(stack, 'Counts', {
+		fields: {
+			tableName: 'string',
+			dailyUpdateCount: 'number',
+			recordCount: 'number',
+			version: 'number',
+		},
+		primaryIndex: { partitionKey: 'tableName' },
+	});
+
+	return { bucket, table, locationsTable, countTable };
 }

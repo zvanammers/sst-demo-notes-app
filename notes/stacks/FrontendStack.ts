@@ -24,7 +24,7 @@ export function FrontendStack({ stack, app }: StackContext) {
 			VITE_BUCKET: bucket.bucketName,
 		},
 		customDomain:
-			app.stageName === 'prod'
+			app.stage === 'prod'
 				? {
 						domainName: 'weather.zvanammers.com',
 						isExternalDomain: true,

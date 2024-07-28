@@ -50,8 +50,6 @@ function App() {
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
-		console.log(router.location);
-		console.log(router.location.pathname);
 		if (router.location.pathname === '/') {
 			setCurrent('Home');
 		} else if (router.location.pathname === '/weather') {

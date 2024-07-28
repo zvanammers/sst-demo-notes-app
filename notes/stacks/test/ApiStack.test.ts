@@ -12,6 +12,5 @@ it('AiStack has correct attributes', async () => {
 	app.stack(StorageStack).stack(ApiStack);
 	// THEN
 	const template = Template.fromStack(getStack(ApiStack));
-	console.log(template);
-	template.resourceCountIs('AWS::Lambda::Function', 2);
+	template.resourceCountIs('AWS::Lambda::Function', 5);
 });
