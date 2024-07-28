@@ -30,7 +30,6 @@ import { queryClient } from '../main';
 import type { AxiosError } from 'axios';
 import type { KeyValuePair } from '../api/models/keyValuePair';
 import type { ListItems } from '../api/models/ListItems';
-import React from 'react';
 
 function Weather() {
 	const [lat, setLat] = useState('');
