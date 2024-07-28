@@ -9,6 +9,7 @@ import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 import notFound from '../common/components/notFound';
 import getConfig from '../config';
+import React from 'react';
 
 export const Route = createRootRoute({
 	component: App,
@@ -88,7 +89,7 @@ function App() {
 				<div
 					style={{
 						background: colorBgContainer,
-						minHeight: '85vh',
+						height: '100%',
 						padding: 24,
 						borderRadius: borderRadiusLG,
 					}}

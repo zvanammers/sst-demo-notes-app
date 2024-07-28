@@ -30,6 +30,7 @@ import { queryClient } from '../main';
 import type { AxiosError } from 'axios';
 import type { KeyValuePair } from '../api/models/keyValuePair';
 import type { ListItems } from '../api/models/ListItems';
+import React from 'react';
 
 function Weather() {
 	const [lat, setLat] = useState('');
@@ -86,6 +87,8 @@ function Weather() {
 				}),
 			refetchOnWindowFocus: false,
 		});
+
+	console.log('error: ', error);
 
 	const {
 		isLoading: isLocationsLoading,
@@ -299,10 +302,17 @@ function Weather() {
 										component={Bookmark}
 										key="bookmark"
 										onClick={() => {
-											if (data?.name && savedLocations?.count !== 10) {
+											if (
+												error === null &&
+												data?.name &&
+												savedLocations?.count !== 10
+											) {
 												saveLocationMutation(data?.name ?? '');
-											} else {
+											} else if (savedLocations?.count === 10) {
 												infoToast('10 locations have been bookmarked');
+											} else {
+												console.log(error);
+												console.log(data?.name);
 											}
 										}}
 									/>

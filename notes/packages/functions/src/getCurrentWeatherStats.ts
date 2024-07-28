@@ -37,7 +37,7 @@ const fetchTemp = async (latLon: LatLon) => {
 const getLatLonFromPostCode = async (postCode: string): Promise<LatLon> => {
 	try {
 		const response = await fetch(
-			`https://api.openweathermap.org/geo/1.0/zip?zip=${postcode},AU&appid=${Config.WEATHER_API_SECRET_KEY}`,
+			`https://api.openweathermap.org/geo/1.0/zip?zip=${postCode},AU&appid=${Config.WEATHER_API_SECRET_KEY}`,
 		);
 		const data = (await response.json()) as ZipInfo;
 		const lat = data.lat.toString();
@@ -79,7 +79,6 @@ export const main = handler(async (event) => {
 	const queryStringLat = event.queryStringParameters?.lat ?? '';
 	const queryStringLon = event.queryStringParameters?.lon ?? '';
 
-	console.log(isValidNumber(queryStringLat));
 	if (isValidNumber(queryStringLat) && isValidNumber(queryStringLon)) {
 		latLon.lat = Number.parseFloat(queryStringLat).toString();
 		latLon.lon = Number.parseFloat(queryStringLon).toString();
@@ -105,7 +104,7 @@ export const main = handler(async (event) => {
 			} as ReturnWithStatus;
 		}
 
-		if (postcode) {
+		if (postcode !== '') {
 			latLon = await getLatLonFromPostCode(postcode);
 		} else {
 			latLon = await getLatLonFromCity(city);
