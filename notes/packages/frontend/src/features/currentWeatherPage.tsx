@@ -88,8 +88,6 @@ function Weather() {
 			refetchOnWindowFocus: false,
 		});
 
-	console.log('error: ', error);
-
 	const {
 		isLoading: isLocationsLoading,
 		data: savedLocations,
@@ -311,8 +309,7 @@ function Weather() {
 											} else if (savedLocations?.count === 10) {
 												infoToast('10 locations have been bookmarked');
 											} else {
-												console.log(error);
-												console.log(data?.name);
+												errorToast('Invalid location to bookmark');
 											}
 										}}
 									/>
