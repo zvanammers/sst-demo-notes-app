@@ -9,7 +9,7 @@ import { getLatLon } from './getLatLon';
 const fetchTemp = async (latLon: LatLon) => {
 	try {
 		const response = await fetch(
-			`https://api.openweathermap.org/data/2.5/weather?lat=${latLon.lat}&lon=${latLon.lon}&appid=${Config.WEATHER_API_SECRET_KEY}&units=metric`,
+			`https://api.openweathermap.org/data/2.5/forecast?lat=${latLon.lat}&lon=${latLon.lon}&appid=${Config.WEATHER_API_SECRET_KEY}&units=metric`,
 		);
 
 		const body = (await response.json()) as CurrentWeather;

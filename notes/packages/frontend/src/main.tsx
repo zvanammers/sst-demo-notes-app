@@ -1,8 +1,7 @@
-import { StrictMode } from 'react';
+import { StrictMode, useState } from 'react';
 import './index.css';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
-
 import { routeTree } from './routeTree.gen';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
@@ -22,6 +21,12 @@ export const queryClient = new QueryClient({
 	},
 });
 
+// import { createContext } from 'react';
+
+// const ThemeContext = createContext('light');
+
+// const [theme, setTheme] = useState('light');
+
 // biome-ignore lint/style/noNonNullAssertion: <explanation>
 const rootElement = document.getElementById('app')!;
 if (!rootElement.innerHTML) {
@@ -29,7 +34,9 @@ if (!rootElement.innerHTML) {
 	root.render(
 		<StrictMode>
 			<QueryClientProvider client={queryClient}>
+				{/* <ThemeContext.Provider value={'dark'}> */}
 				<RouterProvider router={router} />
+				{/* </ThemeContext.Provider> */}
 			</QueryClientProvider>
 		</StrictMode>,
 	);

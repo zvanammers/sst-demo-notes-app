@@ -1,6 +1,6 @@
 import { Input } from 'antd';
 
-const inputTextField = (
+const InputTextField = (
 	name: string,
 	value: string,
 	action: React.Dispatch<React.SetStateAction<string>>,
@@ -8,19 +8,17 @@ const inputTextField = (
 	addOnBefore: React.ReactNode,
 ) => {
 	return (
-		<>
-			<Input
-				placeholder={name}
-				value={value}
-				onPressEnter={onPressEnter}
-				onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-					action(e.target.value)
-				}
-				allowClear
-				addonBefore={addOnBefore}
-			/>
-		</>
+		<Input
+			placeholder={name}
+			value={value}
+			onPressEnter={onPressEnter}
+			onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+				action(e.target.value)
+			}
+			allowClear
+			addonBefore={addOnBefore}
+		/>
 	);
 };
 
-export default inputTextField;
+export default InputTextField;
