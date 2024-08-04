@@ -27,7 +27,7 @@ import type { KeyValuePair } from '../api/models/keyValuePair';
 import type { ListItems } from '../api/models/ListItems';
 import CitySearch from '../common/components/CitySearch';
 
-function Weather() {
+function CurrentWeatherPage() {
 	const [lat, setLat] = useState('');
 	const [lon, setLon] = useState('');
 	const [locationType, setLocationType] = useState('City');
@@ -245,4 +245,4 @@ function Weather() {
 	);
 }
 
-export default Weather;
+export default CurrentWeatherPage;

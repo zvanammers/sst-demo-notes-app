@@ -1,6 +1,6 @@
 import { createLazyFileRoute } from '@tanstack/react-router';
-import Forecast from '../features/weatherForecastPage';
+import WeatherForecastPage from '../features/xweatherForecastPage';
 
 export const Route = createLazyFileRoute('/forecast')({
-	component: Forecast,
+	component: WeatherForecastPage,
 });

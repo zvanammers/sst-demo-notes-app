@@ -4,7 +4,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useDeleteLocations } from '../../api/endpoints/location';
 import { useEffect } from 'react';
 import { queryClient } from '../../main';
-import InputTextField from './inputTextField';
+import InputTextField from './xinputTextField';
 
 interface CitySearchProps {
 	locationType: string;

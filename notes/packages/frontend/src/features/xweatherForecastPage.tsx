@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import type CurrentWeather from '@models/currentWeather';
 import CitySearch from '../common/components/CitySearch';
 
-function Forecast() {
+function WeatherForecastPage() {
 	const [lat, setLat] = useState('');
 	const [lon, setLon] = useState('');
 	const [locationType, setLocationType] = useState('City');
@@ -153,4 +153,4 @@ function Forecast() {
 	);
 }
 
-export default Forecast;
+export default WeatherForecastPage;
