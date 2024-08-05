@@ -114,7 +114,6 @@ function CitySearch({
 	useEffect(() => {
 		if (navigator.geolocation && locationType === 'Location') {
 			setIsLoading(true);
-			loadingToast('Fetching your co-ordinates now ...');
 			navigator.geolocation.getCurrentPosition(
 				(position) => {
 					const { latitude, longitude } = position.coords;
