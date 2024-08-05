@@ -1,41 +1,46 @@
 import getConfig from '../../config';
 import axios from 'axios';
-import type { FetchCurrentWeather } from '../models/fetchCurrentWeather';
+import type { FetchWeather } from '../models/fetchWeather';
 
-const formatQueryStrings = (fetchCurrentWeather: FetchCurrentWeather) => {
+const formatQueryStrings = (fetchWeatherForecast: FetchWeather) => {
 	if (
-		fetchCurrentWeather.locationType === 'Lat' ||
-		fetchCurrentWeather.locationType === 'Location'
+		fetchWeatherForecast.locationType === 'Lat' ||
+		fetchWeatherForecast.locationType === 'Location'
 	) {
-		if (fetchCurrentWeather.lat === '' && fetchCurrentWeather.lon === '') {
+		if (fetchWeatherForecast.lat === '' && fetchWeatherForecast.lon === '') {
 			return '';
 		}
-		if (fetchCurrentWeather.lat && fetchCurrentWeather.lon) {
-			return `?lat=${fetchCurrentWeather.lat}&lon=${fetchCurrentWeather.lon}`;
+		if (fetchWeatherForecast.lat && fetchWeatherForecast.lon) {
+			return `?lat=${fetchWeatherForecast.lat}&lon=${fetchWeatherForecast.lon}`;
 		}
-		if (fetchCurrentWeather.lat) {
-			return `?lat=${fetchCurrentWeather.lat}`;
+		if (fetchWeatherForecast.lat) {
+			return `?lat=${fetchWeatherForecast.lat}`;
 		}
-		return `?lon=${fetchCurrentWeather.lon}`;
+		return `?lon=${fetchWeatherForecast.lon}`;
 	}
 
-	if (fetchCurrentWeather.locationType === 'Postcode') {
-		return `?postcode=${fetchCurrentWeather.postcode}`;
+	if (fetchWeatherForecast.locationType === 'Postcode') {
+		return `?postcode=${fetchWeatherForecast.postcode}`;
 	}
 	if (
-		fetchCurrentWeather.locationType === 'City' ||
-		fetchCurrentWeather.locationType === 'Bookmarks'
+		fetchWeatherForecast.locationType === 'City' ||
+		fetchWeatherForecast.locationType === 'Bookmarks'
 	) {
-		return `?city=${fetchCurrentWeather.city}`;
+		return `?city=${fetchWeatherForecast.city}`;
 	}
 	return '';
 };
 
-export async function useGetCurrentWeather(
-	fetchCurrentWeather: FetchCurrentWeather,
-) {
+export async function useGetCurrentWeather(fetchCurrentWeather: FetchWeather) {
 	const res = await axios.get(
 		`${getConfig().apiUrl}/weather${formatQueryStrings(fetchCurrentWeather)}`,
+	);
+	return res.data;
+}
+
+export async function useGetForecast(fetchWeather: FetchWeather) {
+	const res = await axios.get(
+		`${getConfig().apiUrl}/forecast${formatQueryStrings(fetchWeather)}`,
 	);
 	return res.data;
 }

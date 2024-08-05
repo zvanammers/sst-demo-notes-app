@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
-import Weather from '../features/currentWeatherPage';
+import CurrentWeatherPage from '../features/CurrentWeatherPage';
 
 export const Route = createFileRoute('/weather')({
-	component: Weather,
+	component: CurrentWeatherPage,
 });

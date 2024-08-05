@@ -2,9 +2,9 @@ import { StrictMode } from 'react';
 import './index.css';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
-
 import { routeTree } from './routeTree.gen';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ConfigProvider } from 'antd';
 
 const router = createRouter({ routeTree });
 
@@ -29,7 +29,26 @@ if (!rootElement.innerHTML) {
 	root.render(
 		<StrictMode>
 			<QueryClientProvider client={queryClient}>
-				<RouterProvider router={router} />
+				<ConfigProvider
+					theme={{
+						token: {
+							colorPrimary: '#eb896c',
+						},
+						components: {
+							Menu: {
+								darkItemSelectedBg: '#eb896c',
+							},
+							Slider: {
+								handleActiveColor: '#bf5434',
+								handleColor: '#eb896c',
+								trackBg: '#eb896c',
+								trackHoverBg: '#bf5434',
+							},
+						},
+					}}
+				>
+					<RouterProvider router={router} />
+				</ConfigProvider>
 			</QueryClientProvider>
 		</StrictMode>,
 	);

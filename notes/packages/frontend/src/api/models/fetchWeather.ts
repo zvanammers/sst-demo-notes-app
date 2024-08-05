@@ -1,4 +1,4 @@
-export interface FetchCurrentWeather {
+export interface FetchWeather {
 	locationType: string;
 	lat: string;
 	lon: string;

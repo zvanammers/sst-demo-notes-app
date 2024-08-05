@@ -1,6 +1,6 @@
 import { createLazyFileRoute, useNavigate } from '@tanstack/react-router';
-import { Row, Col, Card } from 'antd';
-import ausMap from '../assets/aus-temp.png';
+import { Row, Col, Card, theme } from 'antd';
+import { ChartLine, CloudMoon } from '@phosphor-icons/react';
 
 export const Route = createLazyFileRoute('/')({
 	component: Index,
@@ -8,17 +8,33 @@ export const Route = createLazyFileRoute('/')({
 
 function Index() {
 	const navigate = useNavigate();
+
+	const {
+		token: { colorPrimary },
+	} = theme.useToken();
+
 	return (
 		<div className="p-2">
 			<h3>Australian Weather</h3>
 			<Row gutter={[16, 24]}>
 				<Col span={12}>
 					<Card
+						bordered={false}
 						hoverable
 						onClick={() => navigate({ to: '/weather' })}
-						cover={<img alt="sun" src={ausMap} />}
+						cover={<CloudMoon size={200} color={colorPrimary} />}
 					>
 						Current Australian Weather
+					</Card>
+				</Col>
+				<Col span={12}>
+					<Card
+						bordered={false}
+						hoverable
+						onClick={() => navigate({ to: '/forecast' })}
+						cover={<ChartLine size={200} color={colorPrimary} />}
+					>
+						Australian Weather Forecast
 					</Card>
 				</Col>
 				<Col span={12} />

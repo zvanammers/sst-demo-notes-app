@@ -1,13 +1,13 @@
 import '../App.css';
-import { useEffect, useState } from 'react';
-import { SunFilled, HomeOutlined } from '@ant-design/icons';
+import { useEffect, useMemo, useState } from 'react';
 import type { MenuProps } from 'antd';
 import { Grid, Layout, Menu, theme } from 'antd';
+import { ChartLine, CloudMoon, HouseLine } from '@phosphor-icons/react';
 const { Header, Content, Footer } = Layout;
 import { Link, useRouterState } from '@tanstack/react-router';
 import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
-import notFound from '../common/components/notFound';
+import notFound from '../common/components/NotFound';
 import getConfig from '../config';
 
 export const Route = createRootRoute({
@@ -29,7 +29,7 @@ function App() {
 					Home
 				</Link>
 			),
-			icon: <HomeOutlined />,
+			icon: <HouseLine />,
 		},
 		{
 			key: 'Weather',
@@ -38,7 +38,16 @@ function App() {
 					Current Weather
 				</Link>
 			),
-			icon: <SunFilled />,
+			icon: <CloudMoon />,
+		},
+		{
+			key: 'Forecast',
+			label: (
+				<Link to="/forecast" className="[&.active]:font-bold">
+					Weather Forecast
+				</Link>
+			),
+			icon: <ChartLine />,
 		},
 	];
 
@@ -54,6 +63,8 @@ function App() {
 			setCurrent('Home');
 		} else if (router.location.pathname === '/weather') {
 			setCurrent('Weather');
+		} else if (router.location.pathname === '/forecast') {
+			setCurrent('Forecast');
 		}
 	}, [window.location.pathname]);
 
@@ -66,6 +77,13 @@ function App() {
 		if (xs) return false;
 		return true;
 	};
+
+	const padding = useMemo(() => {
+		if (current === 'Forecast') {
+			return '24px 24px 24px 0px';
+		}
+		return 24;
+	}, [current]);
 
 	return (
 		<Layout>
@@ -89,7 +107,7 @@ function App() {
 					style={{
 						background: colorBgContainer,
 						height: '100%',
-						padding: 24,
+						padding: padding,
 						borderRadius: borderRadiusLG,
 					}}
 				>

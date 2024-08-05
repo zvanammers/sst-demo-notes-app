@@ -1,37 +1,34 @@
 import {
 	Card,
-	Flex,
 	Col,
 	Row,
-	Select,
 	Space,
 	Typography,
 	Progress,
 	Grid,
 	message,
 	Tooltip,
-	Button,
+	theme,
 } from 'antd';
 const { Text, Title, Paragraph } = Typography;
 import Icon, { ReloadOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
-import inputTextField from '../common/components/inputTextField';
 import { type IconComponent, getWeatherIcon } from '../common/weatherIcons';
 import { useGetCurrentWeather } from '../api/endpoints/weather';
 import Bookmark from '@phosphor-icons/core/duotone/bookmark-duotone.svg?react';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import type currentWeather from '@models/currentWeather';
+import type CurrentWeather from '@models/currentWeather';
 import {
 	useSaveLocation,
 	useGetSavedLocations,
-	useDeleteLocations,
 } from '../api/endpoints/location';
 import { queryClient } from '../main';
 import type { AxiosError } from 'axios';
 import type { KeyValuePair } from '../api/models/keyValuePair';
 import type { ListItems } from '../api/models/ListItems';
+import CitySearch from '../common/components/CitySearch';
 
-function Weather() {
+function CurrentWeatherPage() {
 	const [lat, setLat] = useState('');
 	const [lon, setLon] = useState('');
 	const [locationType, setLocationType] = useState('City');
@@ -43,6 +40,10 @@ function Weather() {
 
 	const [messageApi, contextHolder] = message.useMessage();
 	const { useBreakpoint } = Grid;
+
+	const {
+		token: { colorPrimary },
+	} = theme.useToken();
 
 	const successToast = (message: string) => {
 		messageApi.open({
@@ -65,16 +66,8 @@ function Weather() {
 		});
 	};
 
-	const loadingToast = (message: string) => {
-		messageApi.open({
-			type: 'loading',
-			content: message,
-			duration: 1.5,
-		});
-	};
-
 	const { isLoading, data, refetch, isFetching, error } =
-		useQuery<currentWeather>({
+		useQuery<CurrentWeather>({
 			queryKey: ['weather'],
 			queryFn: () =>
 				useGetCurrentWeather({
@@ -129,41 +122,8 @@ function Weather() {
 		},
 	});
 
-	const { mutate: deleteLocationMutation } = useMutation({
-		mutationFn: useDeleteLocations,
-		onMutate: () => {
-			loadingToast('Removing bookmark now ...');
-		},
-		onSuccess: (data) => {
-			infoToast(data?.message);
-			setSavedCity('');
-			queryClient.invalidateQueries({ queryKey: ['savedLocations'] });
-		},
-	});
-
 	const onRefetchClick = () => {
 		refetch();
-	};
-
-	const latLongUI = () => {
-		return (
-			<>
-				{inputTextField(
-					'Latitude',
-					lat,
-					setLat,
-					onRefetchClick,
-					<div style={{ width: 60 }}>Latitude</div>,
-				)}
-				{inputTextField(
-					'Longitude',
-					lon,
-					setLon,
-					onRefetchClick,
-					<div style={{ width: 60 }}>Longitude</div>,
-				)}
-			</>
-		);
 	};
 
 	const WeatherIcon: IconComponent = getWeatherIcon(
@@ -171,24 +131,6 @@ function Weather() {
 			? data?.weather[0].icon
 			: '',
 	);
-
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-	useEffect(() => {
-		if (navigator.geolocation && locationType === 'Location') {
-			loadingToast('Fetching your co-ordinates now ...');
-			navigator.geolocation.getCurrentPosition(
-				(position) => {
-					const { latitude, longitude } = position.coords;
-					setLat(latitude.toString());
-					setLon(longitude.toString());
-				},
-
-				(error) => {
-					console.error('Error: cannot get user location: ', error);
-				},
-			);
-		}
-	}, [locationType]);
 
 	const isLargeWindow = () => {
 		const { lg, md } = useBreakpoint();
@@ -199,7 +141,6 @@ function Weather() {
 		<>
 			{contextHolder}
 			<div className="p-2">
-				{isLargeWindow() && <script>alert('hello')</script>}
 				<Row gutter={[16, 16]}>
 					{isLargeWindow() && (
 						<Col span={24}>
@@ -216,67 +157,24 @@ function Weather() {
 						</Col>
 					)}
 					<Col span={isLargeWindow() ? '8' : '24'}>
-						<Space
-							direction="vertical"
-							style={{ width: '100%' }}
-							size={'large'}
-						>
-							<Card style={{ placeContent: 'center' }}>
-								<Flex vertical gap={12}>
-									<Select
-										defaultValue="City"
-										style={{ width: '100%' }}
-										onChange={setLocationType}
-										options={[
-											{ value: 'City', label: 'City' },
-											{
-												value: 'Bookmarks',
-												label: 'Bookmarked Cities (max. 10)',
-											},
-											{ value: 'Postcode', label: 'Postcode' },
-											{ value: 'Lat', label: 'Lat/Lon' },
-											{ value: 'Location', label: 'Your Location' },
-										]}
-									/>
-									{(locationType === 'Lat' || locationType === 'Location') &&
-										latLongUI()}
-									{locationType === 'Postcode' &&
-										inputTextField(
-											locationType,
-											postcode,
-											setPostcode,
-											onRefetchClick,
-											locationType,
-										)}
-									{locationType === 'City' &&
-										inputTextField(
-											locationType,
-											city,
-											setCity,
-											onRefetchClick,
-											locationType,
-										)}
-									{locationType === 'Bookmarks' && !locationsError && (
-										<>
-											<Select
-												style={{ width: '100%' }}
-												options={listOfSavedLocations}
-												loading={isLocationsLoading}
-												onChange={setSavedCity}
-												value={savedCity}
-											/>
-											<Button
-												danger
-												disabled={savedCity === ''}
-												onClick={() => deleteLocationMutation(savedCity)}
-											>
-												Remove Bookmark
-											</Button>
-										</>
-									)}
-								</Flex>
-							</Card>
-						</Space>
+						<CitySearch
+							locationType={locationType}
+							postcode={postcode}
+							city={city}
+							lat={lat}
+							lon={lon}
+							savedCity={savedCity}
+							setCity={setCity}
+							setLat={setLat}
+							setLon={setLon}
+							setLocationType={setLocationType}
+							setPostcode={setPostcode}
+							setSavedCity={setSavedCity}
+							locationsError={locationsError}
+							isLocationsLoading={isLocationsLoading}
+							listOfSavedLocations={listOfSavedLocations}
+							onRefetchClick={onRefetchClick}
+						/>
 					</Col>
 					<Col span={isLargeWindow() ? '16' : '24'}>
 						<Card
@@ -327,7 +225,11 @@ function Weather() {
 									<Text>Description: {data.weather[0]?.description}</Text>
 									<Space>
 										<Text>Humidity:</Text>
-										<Progress percent={data.main.humidity} size={[100, 10]} />
+										<Progress
+											strokeColor={colorPrimary}
+											percent={data.main.humidity}
+											size={[100, 10]}
+										/>
 									</Space>
 									<Text>
 										Sunrise:{' '}
@@ -352,4 +254,4 @@ function Weather() {
 	);
 }
 
-export default Weather;
+export default CurrentWeatherPage;

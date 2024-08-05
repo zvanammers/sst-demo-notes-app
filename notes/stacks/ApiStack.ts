@@ -29,6 +29,7 @@ export function ApiStack({ stack }: StackContext) {
 		},
 		routes: {
 			'GET /weather': 'packages/functions/src/getCurrentWeatherStats.main',
+			'GET /forecast': 'packages/functions/src/getWeatherForecast.main',
 			'POST /location': 'packages/functions/src/createLocation.main',
 			'GET /locations': 'packages/functions/src/getLocations.main',
 			'DELETE /location/{id}': 'packages/functions/src/deleteLocation.main',
