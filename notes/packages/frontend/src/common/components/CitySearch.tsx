@@ -1,8 +1,8 @@
-import { Button, Card, Flex, Select, Space, message } from 'antd';
+import { Button, Card, Flex, Input, Select, Space, message } from 'antd';
 import type { KeyValuePair } from '../../api/models/keyValuePair';
 import { useMutation } from '@tanstack/react-query';
 import { useDeleteLocations } from '../../api/endpoints/location';
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { queryClient } from '../../main';
 import InputTextField from './InputTextField';
 
@@ -44,6 +44,7 @@ function CitySearch({
 	onRefetchClick,
 }: CitySearchProps) {
 	const [messageApi, contextHolder] = message.useMessage();
+	const [isLoading, setIsLoading] = useState(false);
 
 	const infoToast = (message: string) => {
 		messageApi.open({
@@ -73,36 +74,53 @@ function CitySearch({
 		},
 	});
 
-	const latLongUI = () => {
+	const latLongUI = (localIsLoading?: boolean) => {
 		return (
 			<>
-				{InputTextField(
-					'Latitude',
-					lat,
-					setLat,
-					onRefetchClick,
-					<div style={{ width: 60 }}>Latitude</div>,
-				)}
-				{InputTextField(
-					'Longitude',
-					lon,
-					setLon,
-					onRefetchClick,
-					<div style={{ width: 60 }}>Longitude</div>,
-				)}
+				<InputTextField
+					name="Latitude"
+					value={lat}
+					action={setLat}
+					onPressEnter={onRefetchClick}
+					addOnBefore={<div style={{ width: 60 }}>Latitude</div>}
+					isLoading={localIsLoading ? isLoading : undefined}
+				/>
+				<InputTextField
+					name="Longitude"
+					value={lon}
+					action={setLon}
+					onPressEnter={onRefetchClick}
+					addOnBefore={<div style={{ width: 60 }}>Longitude</div>}
+					isLoading={localIsLoading ? isLoading : undefined}
+				/>
 			</>
 		);
 	};
 
+	const locationSearchOptions = useMemo(() => {
+		return [
+			{ value: 'City', label: 'City' },
+			savedCity !== undefined && {
+				value: 'Bookmarks',
+				label: 'Bookmarked Cities (max. 10)',
+			},
+			{ value: 'Postcode', label: 'Postcode' },
+			{ value: 'Lat', label: 'Lat/Lon' },
+			{ value: 'Location', label: 'Your Location' },
+		].filter((x) => x !== false) as KeyValuePair[];
+	}, [savedCity]);
+
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		if (navigator.geolocation && locationType === 'Location') {
+			setIsLoading(true);
 			loadingToast('Fetching your co-ordinates now ...');
 			navigator.geolocation.getCurrentPosition(
 				(position) => {
 					const { latitude, longitude } = position.coords;
 					setLat(latitude.toString());
 					setLon(longitude.toString());
+					setIsLoading(false);
 				},
 
 				(error) => {
@@ -122,35 +140,28 @@ function CitySearch({
 							defaultValue="City"
 							style={{ width: '100%' }}
 							onChange={setLocationType}
-							options={[
-								{ value: 'City', label: 'City' },
-								{
-									value: 'Bookmarks',
-									label: 'Bookmarked Cities (max. 10)',
-								},
-								{ value: 'Postcode', label: 'Postcode' },
-								{ value: 'Lat', label: 'Lat/Lon' },
-								{ value: 'Location', label: 'Your Location' },
-							]}
+							options={locationSearchOptions}
 						/>
-						{(locationType === 'Lat' || locationType === 'Location') &&
-							latLongUI()}
-						{locationType === 'Postcode' &&
-							InputTextField(
-								locationType,
-								postcode,
-								setPostcode,
-								onRefetchClick,
-								locationType,
-							)}
-						{locationType === 'City' &&
-							InputTextField(
-								locationType,
-								city,
-								setCity,
-								onRefetchClick,
-								locationType,
-							)}
+						{locationType === 'Lat' && latLongUI(undefined)}
+						{locationType === 'Location' && latLongUI(true)}
+						{locationType === 'Postcode' && (
+							<InputTextField
+								name={locationType}
+								value={postcode}
+								action={setPostcode}
+								onPressEnter={onRefetchClick}
+								addOnBefore={locationType}
+							/>
+						)}
+						{locationType === 'City' && (
+							<InputTextField
+								name={locationType}
+								value={city}
+								action={setCity}
+								onPressEnter={onRefetchClick}
+								addOnBefore={locationType}
+							/>
+						)}
 						{locationType === 'Bookmarks' &&
 							savedCity !== undefined &&
 							!locationsError && (

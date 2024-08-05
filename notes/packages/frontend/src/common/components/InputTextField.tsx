@@ -1,24 +1,48 @@
 import { Input } from 'antd';
 
-const InputTextField = (
-	name: string,
-	value: string,
-	action: React.Dispatch<React.SetStateAction<string>>,
-	onPressEnter: () => void,
-	addOnBefore: React.ReactNode,
-) => {
+interface InputTextFieldProps {
+	name: string;
+	value: string;
+	action: React.Dispatch<React.SetStateAction<string>>;
+	onPressEnter: () => void;
+	addOnBefore: React.ReactNode;
+	isLoading?: boolean;
+}
+
+function InputTextField({
+	name,
+	value,
+	action,
+	onPressEnter,
+	addOnBefore,
+	isLoading,
+}: InputTextFieldProps) {
+	if (isLoading === undefined) {
+		return (
+			<Input
+				placeholder={name}
+				value={value}
+				onPressEnter={onPressEnter}
+				onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+					action(e.target.value)
+				}
+				allowClear
+				addonBefore={addOnBefore}
+			/>
+		);
+	}
 	return (
-		<Input
+		<Input.Search
 			placeholder={name}
 			value={value}
 			onPressEnter={onPressEnter}
 			onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
 				action(e.target.value)
 			}
-			allowClear
 			addonBefore={addOnBefore}
+			loading={isLoading}
 		/>
 	);
-};
+}
 
 export default InputTextField;

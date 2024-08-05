@@ -1,4 +1,4 @@
-import type { PopularWeatherStats } from '../models/currentWeather';
+import type PopularWeather from '../models/PopularWeather';
 
 export function convertFahrenheit(fah: number) {
 	return (fah - 32) / 1.8;
@@ -9,8 +9,8 @@ export function convertCelcius(cel: number) {
 }
 
 export function convertPopularWeatherStatsToCelcius(
-	stats?: PopularWeatherStats,
-): PopularWeatherStats | undefined {
+	stats?: PopularWeather,
+): PopularWeather | undefined {
 	if (!stats) {
 		return undefined;
 	}
@@ -23,5 +23,5 @@ export function convertPopularWeatherStatsToCelcius(
 		humidity: stats.humidity,
 		sea_level: stats.sea_level,
 		grnd_level: stats.grnd_level,
-	} as PopularWeatherStats;
+	} as PopularWeather;
 }

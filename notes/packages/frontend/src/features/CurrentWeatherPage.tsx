@@ -8,6 +8,7 @@ import {
 	Grid,
 	message,
 	Tooltip,
+	theme,
 } from 'antd';
 const { Text, Title, Paragraph } = Typography;
 import Icon, { ReloadOutlined } from '@ant-design/icons';
@@ -39,6 +40,10 @@ function CurrentWeatherPage() {
 
 	const [messageApi, contextHolder] = message.useMessage();
 	const { useBreakpoint } = Grid;
+
+	const {
+		token: { colorPrimary },
+	} = theme.useToken();
 
 	const successToast = (message: string) => {
 		messageApi.open({
@@ -220,7 +225,11 @@ function CurrentWeatherPage() {
 									<Text>Description: {data.weather[0]?.description}</Text>
 									<Space>
 										<Text>Humidity:</Text>
-										<Progress percent={data.main.humidity} size={[100, 10]} />
+										<Progress
+											strokeColor={colorPrimary}
+											percent={data.main.humidity}
+											size={[100, 10]}
+										/>
 									</Space>
 									<Text>
 										Sunrise:{' '}

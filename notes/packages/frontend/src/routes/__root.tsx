@@ -1,5 +1,5 @@
 import '../App.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { MenuProps } from 'antd';
 import { Grid, Layout, Menu, theme } from 'antd';
 import { ChartLine, CloudMoon, HouseLine } from '@phosphor-icons/react';
@@ -78,6 +78,13 @@ function App() {
 		return true;
 	};
 
+	const padding = useMemo(() => {
+		if (current === 'Forecast') {
+			return '24px 24px 24px 0px';
+		}
+		return 24;
+	}, [current]);
+
 	return (
 		<Layout>
 			<Header style={{ display: 'flex', alignItems: 'center' }}>
@@ -100,7 +107,7 @@ function App() {
 					style={{
 						background: colorBgContainer,
 						height: '100%',
-						padding: 24,
+						padding: padding,
 						borderRadius: borderRadiusLG,
 					}}
 				>
