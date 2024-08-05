@@ -12,11 +12,10 @@ export function ApiStack({ stack }: StackContext) {
 	const api = new Api(stack, 'Api', {
 		cors: {
 			allowMethods: ['GET', 'POST', 'DELETE'],
-			// allowOrigins: [
-			// 	'https://d1ms69azgi9yhj.cloudfront.net',
-			// 	'https://weather.zvanammers.com',
-
-			// ],
+			allowOrigins: [
+				'https://d1ms69azgi9yhj.cloudfront.net',
+				'https://weather.zvanammers.com',
+			],
 		},
 		defaults: {
 			throttle: {

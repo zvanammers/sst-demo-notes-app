@@ -8,6 +8,9 @@ import {
 	Skeleton,
 	InputNumber,
 	type InputNumberProps,
+	Button,
+	Space,
+	Slider,
 } from 'antd';
 const { Title, Paragraph } = Typography;
 import { useState } from 'react';
@@ -90,7 +93,7 @@ function WeatherForecastPage() {
 				)}
 				<Col
 					span={isLargeWindow() ? '12' : '24'}
-					style={{ padding: '0px 0px 24px 24px' }}
+					style={{ padding: '0px 0px 12px 24px' }}
 				>
 					<CitySearch
 						locationType={locationType}
@@ -107,14 +110,47 @@ function WeatherForecastPage() {
 					/>
 				</Col>
 				<Col span={isLargeWindow() ? '12' : '24'} style={{ height: '100%' }}>
-					<InputNumber
-						style={{ paddingLeft: '24px' }}
-						addonBefore="Days Forecast (1-5 days)"
-						min={1}
-						max={5}
-						defaultValue={1}
-						onChange={onChange}
-					/>
+					<Space
+						align="center"
+						style={{ paddingLeft: '24px', paddingTop: '0px' }}
+						direction="vertical"
+					>
+						{/* <InputNumber
+							addonBefore="Days Forecast (1-5 days)"
+							min={1}
+							max={5}
+							defaultValue={1}
+							onChange={onChange}
+						/> */}
+						<Row>
+							<Col span={12}>
+								<Slider
+									min={1}
+									max={5}
+									onChange={onChange}
+									value={typeof days === 'number' ? days : 1}
+								/>
+							</Col>
+							<Col span={12}>
+								<InputNumber
+									min={1}
+									max={5}
+									style={{ margin: '0 16px' }}
+									value={typeof days === 'number' ? days : 1}
+									onChange={onChange}
+								/>
+							</Col>
+						</Row>
+						<Button
+							onClick={() => refetch()}
+							style={{
+								borderColor: colorPrimary,
+								backgroundColor: colorPrimary,
+							}}
+						>
+							Search
+						</Button>
+					</Space>
 				</Col>
 				{(isLoading || isFetching) && (
 					<Col span={isLargeWindow() ? '16' : '24'}>
@@ -140,8 +176,8 @@ function WeatherForecastPage() {
 								/>
 								<YAxis
 									domain={[
-										(dataMin: number) => Math.floor(dataMin),
-										(dataMax: number) => Math.ceil(dataMax),
+										(dataMin: number) => Math.floor(dataMin / 10) * 10,
+										(dataMax: number) => Math.ceil(dataMax / 10) * 10,
 									]}
 									tickFormatter={(x) => `${x}°C`}
 								/>

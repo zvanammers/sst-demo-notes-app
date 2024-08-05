@@ -1,4 +1,4 @@
-import { Button, Card, Flex, Input, Select, Space, message } from 'antd';
+import { Button, Card, Flex, Select, Space, message } from 'antd';
 import type { KeyValuePair } from '../../api/models/keyValuePair';
 import { useMutation } from '@tanstack/react-query';
 import { useDeleteLocations } from '../../api/endpoints/location';

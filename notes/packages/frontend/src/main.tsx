@@ -38,6 +38,12 @@ if (!rootElement.innerHTML) {
 							Menu: {
 								darkItemSelectedBg: '#eb896c',
 							},
+							Slider: {
+								handleActiveColor: '#bf5434',
+								handleColor: '#eb896c',
+								trackBg: '#eb896c',
+								trackHoverBg: '#bf5434',
+							},
 						},
 					}}
 				>
