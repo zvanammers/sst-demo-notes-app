@@ -176,8 +176,8 @@ function WeatherForecastPage() {
 								/>
 								<YAxis
 									domain={[
-										(dataMin: number) => Math.floor(dataMin / 10) * 10,
-										(dataMax: number) => Math.ceil(dataMax / 10) * 10,
+										(dataMin: number) => Math.floor(dataMin / 5) * 5,
+										(dataMax: number) => Math.ceil(dataMax / 5) * 5,
 									]}
 									tickFormatter={(x) => `${x}°C`}
 								/>

@@ -27,8 +27,9 @@ const processForecast = (
 		f.push({
 			feels_like: item.main.feels_like,
 			// dt: item.dt.toString(),
-			dt: new Date(item.dt * 1000).toLocaleTimeString('aus', {
+			dt: new Date(item.dt * 1000).toLocaleTimeString('en-US', {
 				hour12: true,
+				timeZone: 'Australia/Sydney',
 			}),
 			temp: item.main.temp,
 			humidity: item.main.humidity,
@@ -55,7 +56,6 @@ export const main = handler(async (event: APIGatewayProxyEvent) => {
 	}
 
 	const stats = await fetchTemp(latLon as LatLon);
-
 	const body = processForecast(stats) as SimpleForecastWeather[];
 	return {
 		statusCode: 200,
